@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 58%{?dist}
+Release: 66%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -74,18 +74,32 @@ Patch0063: 0063-RH-fix-warning.patch
 Patch0064: 0064-RHBZ-1010040-fix-ID_FS-attrs.patch
 Patch0065: 0065-UPBZ-995538-fail-rdac-on-unavailable.patch
 Patch0066: 0066-UP-dos-4k-partition-fix.patch
+Patch0067: 0067-RHBZ-1022899-fix-udev-partition-handling.patch
+Patch0068: 0068-RHBZ-1034578-label-partition-devices.patch
+Patch0069: 0069-UPBZ-1033791-improve-rdac-checker.patch
+Patch0070: 0070-RHBZ-1036503-blacklist-td-devs.patch
+Patch0071: 0071-RHBZ-1031546-strip-dev.patch
+Patch0072: 0072-RHBZ-1039199-check-loop-control.patch
+Patch0073: 0073-RH-update-build-flags.patch
+Patch0074: 0074-RHBZ-1056976-dm-mpath-rules.patch
+Patch0075: 0075-RHBZ-1056976-reload-flag.patch
+Patch0076: 0076-RHBZ-1056686-add-hw_str_match.patch
+Patch0077: 0077-RHBZ-1054806-mpathconf-always-reload.patch
+Patch0078: 0078-RHBZ-1054044-fix-mpathconf-manpage.patch
+Patch0079: 0079-RHBZ-1070581-add-wwid-option.patch
+Patch0080: 0080-RHBZ-1075796-cmdline-wwid.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
 Requires: kpartx = %{version}-%{release}
-Requires: device-mapper >= 1.02.39-1
+Requires: device-mapper >= 1.02.82-2
 Requires: initscripts
 Requires(post): systemd-units systemd-sysv chkconfig
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 
 # build/setup
-BuildRequires: libaio-devel, device-mapper-devel >= 1.02.39-1
+BuildRequires: libaio-devel, device-mapper-devel >= 1.02.82-2
 BuildRequires: libselinux-devel, libsepol-devel
 BuildRequires: readline-devel, ncurses-devel
 BuildRequires: systemd-units, systemd-devel
@@ -192,6 +206,20 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0064 -p1
 %patch0065 -p1
 %patch0066 -p1
+%patch0067 -p1
+%patch0068 -p1
+%patch0069 -p1
+%patch0070 -p1
+%patch0071 -p1
+%patch0072 -p1
+%patch0073 -p1
+%patch0074 -p1
+%patch0075 -p1
+%patch0076 -p1
+%patch0077 -p1
+%patch0078 -p1
+%patch0079 -p1
+%patch0080 -p1
 cp %{SOURCE1} .
 
 %build
@@ -258,6 +286,7 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/mpathconf.8.gz
 %{_mandir}/man8/mpathpersist.8.gz
 %config /usr/lib/udev/rules.d/62-multipath.rules
+%config /usr/lib/udev/rules.d/11-dm-mpath.rules
 %doc AUTHOR COPYING FAQ
 %doc multipath.conf
 %dir /etc/multipath
@@ -285,6 +314,76 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Wed Mar 12 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-66
+- Add 0080-RHBZ-1075796-cmdline-wwid.patch
+  * add multipath option "-A" to add wwids specified by the kernel
+    command line mapth.wwid options.
+- Resolves: bz #1075796
+
+* Mon Mar  3 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-65
+- Add 0078-RHBZ-1054044-fix-mpathconf-manpage.patch
+  * Fix typo
+- Add 0079-RHBZ-1070581-add-wwid-option.patch
+  * add multipath option "-a". To add a device's wwid to the wwids file
+- Resolves: bz #1054044, #1070581
+
+* Thu Jan 30 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-64
+- Modify 0076-RHBZ-1056686-add-hw_str_match.patch
+  * Fix memory leak
+- Resolves: bz #1056686
+
+* Wed Jan 29 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-63
+- Modify 0072-RHBZ-1039199-check-loop-control.patch
+  * only call close on the /dev/loop-control fd the open succeeds
+- Add 0073-RH-update-build-flags.patch
+  * fix print call to work with -Werror=format-security compile flag, and
+    change compilation flags for non-rpmbuild compiles
+- Add 0074-RHBZ-1056976-dm-mpath-rules.patch
+  * Add rules to keep from doing work in udev if there are no
+    active paths, or if the event was for a multipath device
+    reloading its table due to a path change.
+- Add 0075-RHBZ-1056976-reload-flag.patch
+  * multipath code to identify reloads that the new rules can
+    ignore
+- Add 0076-RHBZ-1056686-add-hw_str_match.patch
+  * add a new default config paramter, "hw_str_match", to make user
+    device configs only overwrite builtin device configs if the
+    identifier strings match exactly, like the default in RHEL6.
+- Add 0077-RHBZ-1054806-mpathconf-always-reload.patch
+  * Make mpathconf always reconfgure multipathd when you run it with
+    a reconfigure option and --with-multipathd=y, even if the
+    configuration doesn't change.
+- Update Requires and BuildRequires for device-mapper to 1.02.82-2
+- Install new udev rules file /usr/lib/udev/rules.d/11-dm-mpath.rules
+- Related: bz #1039199
+- Resolves: bz #1054806, #1056686, #1056976
+
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.4.9-62
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.4.9-61
+- Mass rebuild 2013-12-27
+
+* Wed Dec 11 2013 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-60
+- Add 0072-RHBZ-1039199-check-loop-control.patch
+  * Make kpartx use LOOP_CTL_GET_FREE and loop-control to find a free
+    loop device. This will autoload the loop module.
+- Resolves: bz #1039199
+
+* Mon Dec  9 2013 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-59
+- Add 0067-RHBZ-1022899-fix-udev-partition-handling.patch
+  * Make sure to wipe partition devices on change event if they weren't 
+    wiped on the device add event 
+- Add 0068-RHBZ-1034578-label-partition-devices.patch   
+  * Make sure that partition devices are labeled like the whole device 
+- Add 0069-UPBZ-1033791-improve-rdac-checker.patch   
+  *  Use RTPG data in RDAC checker 
+- Add 0070-RHBZ-1036503-blacklist-td-devs.patch
+- Add 0071-RHBZ-1031546-strip-dev.patch   
+  * make multipathd interactive commands able to handle /dev/<devnode> 
+    instead of just <devnode>
+- Resolves: bz #1022899, #1031546, #1033791, #1034578, #1036503 
+
 * Thu Oct 24 2013 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-58
 - 0066-UP-dos-4k-partition-fix.patch
   * Make kpartx correctly handle 4K sector size devices with dos partitions.
