@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 66%{?dist}
+Release: 77%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -57,7 +57,7 @@ Patch0046: 0046-RHBZ-883981-move-udev-rules.patch
 Patch0047: 0047-RHBZ-kpartx-read-only-loop-devs.patch
 Patch0048: 0048-RH-print-defaults.patch
 Patch0049: 0049-RH-remove-ID_FS_TYPE.patch
-#Patch0050: 0050-RH-listing-speedup.patch
+Patch0050: 0050-RH-listing-speedup.patch
 Patch0051: 0051-UP-fix-cli-resize.patch
 Patch0052: 0052-RH-fix-bad-derefs.patch
 Patch0053: 0053-UP-fix-failback.patch
@@ -88,18 +88,43 @@ Patch0077: 0077-RHBZ-1054806-mpathconf-always-reload.patch
 Patch0078: 0078-RHBZ-1054044-fix-mpathconf-manpage.patch
 Patch0079: 0079-RHBZ-1070581-add-wwid-option.patch
 Patch0080: 0080-RHBZ-1075796-cmdline-wwid.patch
+Patch0081: 0081-RHBZ-1066264-check-prefix-on-rename.patch
+Patch0082: 0082-UPBZ-1109995-no-sync-turs-on-pthread_cancel.patch
+Patch0083: 0083-RHBZ-1080055-orphan-paths-on-reload.patch
+Patch0084: 0084-RHBZ-1110000-multipath-man.patch
+Patch0085: 0085-UPBZ-1110006-datacore-config.patch
+Patch0086: 0086-RHBZ-1110007-orphan-path-on-failed-add.patch
+Patch0087: 0087-RHBZ-1110013-config-error-checking.patch
+Patch0088: 0088-RHBZ-1069811-configurable-prio-timeout.patch
+Patch0089: 0089-RHBZ-1110016-add-noasync-option.patch
+Patch0090: 0090-UPBZ-1080038-reorder-paths-for-round-robin.patch
+Patch0091: 0091-RHBZ-1069584-fix-empty-values-fast-io-fail-and-dev-loss.patch
+Patch0092: 0092-UPBZ-1104605-reload-on-rename.patch
+Patch0093: 0093-UPBZ-1086825-user-friendly-name-remap.patch
+Patch0094: 0094-RHBZ-1086825-cleanup-remap.patch
+Patch0095: 0095-RHBZ-1127944-xtremIO-config.patch
+Patch0096: 0096-RHBZ-979474-new-wildcards.patch
+Patch0097: 0097-RH-fix-coverity-errors.patch
+Patch0098: 0098-UPBZ-1067171-mutipath-i.patch
+Patch0099: 0099-RH-add-all-devs.patch
+Patch0100: 0100-RHBZ-1067171-multipath-i-update.patch
+Patch0101: 0101-RH-cleanup-partmaps-code.patch
+Patch0102: 0102-RHBZ-631009-deferred-remove.patch
+Patch0103: 0103-RHBZ-1148979-fix-partition-mapping-creation-race-with-kpartx.patch
+Patch0104: 0104-RHBZ-1159337-fix-double-free.patch
+Patch0105: 0105-RHBZ-1180032-find-multipaths-man.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
 Requires: kpartx = %{version}-%{release}
-Requires: device-mapper >= 1.02.82-2
+Requires: device-mapper >= 1.02.89
 Requires: initscripts
 Requires(post): systemd-units systemd-sysv chkconfig
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 
 # build/setup
-BuildRequires: libaio-devel, device-mapper-devel >= 1.02.82-2
+BuildRequires: libaio-devel, device-mapper-devel >= 1.02.89
 BuildRequires: libselinux-devel, libsepol-devel
 BuildRequires: readline-devel, ncurses-devel
 BuildRequires: systemd-units, systemd-devel
@@ -189,7 +214,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0047 -p1
 %patch0048 -p1
 %patch0049 -p1
-# %patch0050 -p1
+%patch0050 -p1
 %patch0051 -p1
 %patch0052 -p1
 %patch0053 -p1
@@ -220,6 +245,31 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0078 -p1
 %patch0079 -p1
 %patch0080 -p1
+%patch0081 -p1
+%patch0082 -p1
+%patch0083 -p1
+%patch0084 -p1
+%patch0085 -p1
+%patch0086 -p1
+%patch0087 -p1
+%patch0088 -p1
+%patch0089 -p1
+%patch0090 -p1
+%patch0091 -p1
+%patch0092 -p1
+%patch0093 -p1
+%patch0094 -p1
+%patch0095 -p1
+%patch0096 -p1
+%patch0097 -p1
+%patch0098 -p1
+%patch0099 -p1
+%patch0100 -p1
+%patch0101 -p1
+%patch0102 -p1
+%patch0103 -p1
+%patch0104 -p1
+%patch0105 -p1
 cp %{SOURCE1} .
 
 %build
@@ -314,6 +364,112 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Fri Jan  9 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77
+- Add 0105-RHBZ-1180032-find-multipaths-man.patch
+  * add find_multipaths to man page
+- Modify multipath.conf (bz #1069360)
+  * add uid_attribute example
+- Resolves: bz #1180032
+
+* Fri Nov 14 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-76
+- Modify 0102-RHBZ-631009-deferred-remove.patch
+  * Fixed compiler warning message for builds with old device-mapper versions
+- Add 0104-RHBZ-1159337-fix-double-free.patch
+  * made ev_remove_path exit immediately after failing setup_multipath, since
+    it handles cleaning up the device
+- Resolves: bz #1159337
+- Related: bz #631009
+
+* Thu Nov  6 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-75
+- Add 0103-RHBZ-1148979-fix-partition-mapping-creation-race-with-kpartx.patch
+  * Only run kpartx on device activation
+- Resolves: bz #1148979
+
+* Tue Oct 28 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-74
+- Respin again to let buildroot catch up.
+- Related: bz #631009
+
+* Tue Oct 28 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-73
+- Respin to pick up latest lvm2 code
+- Related: bz #631009
+
+* Tue Oct 28 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-72
+- Add 0101-RH-cleanup-partmaps-code.patch
+  * code refactoring to prepare for next patch
+- Add 0102-RHBZ-631009-deferred-remove.patch
+  * add deferred_remove option to /etc/multipath.conf
+- Resolves: bz #631009
+
+* Fri Sep  5 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-71
+- Re-add 0050-RH-listing-speedup.patch
+- Modify 0098-UPBZ-1067171-mutipath-i.patch
+  * add dry_run cleanup code from upstream
+- Refresh 0099-RH-add-all-devs.patch
+- Add 0100-RHBZ-1067171-multipath-i-update.patch
+  * make -i work correctly with find_multipaths
+- Resolves: bz #1067171
+
+* Wed Sep  3 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-70
+- Modify 0096-RHBZ-979474-new-wildcards.patch
+  * Fix a faulty check
+- Add 0098-UPBZ-1067171-mutipath-i.patch
+  * Add -i option to ignore wwids file when checking for valid paths
+- Add 0099-RH-add-all-devs.patch
+  * Add new devices config option all_devs. This makes the configuration
+    overwrite the specified values in all builtin configs
+- Related: bz #979474
+- Resolves: bz #1067171
+
+* Thu Aug 28 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-69
+- Add 0096-RHBZ-979474-new-wildcards.patch
+  * Add N, n, R, and r path wildcards to print World Wide ids
+- Add 0097-RH-fix-coverity-errors.patch
+  * Fix a number of unterminated strings and memory leaks on failure
+    paths.
+- Resolves: bz #979474
+
+* Tue Aug 12 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-68
+- Add 0091-RHBZ-1069584-fix-empty-values-fast-io-fail-and-dev-loss.patch
+  * check for null pointers in configuration reading code.
+- Add 0092-UPBZ-1104605-reload-on-rename.patch
+  * Reload table on rename if necessary
+- Add 0093-UPBZ-1086825-user-friendly-name-remap.patch
+  * Keep existing user_friend_name if possible
+- Add 0094-RHBZ-1086825-cleanup-remap.patch
+  * Cleanup issues with upstream patch
+- Add 0095-RHBZ-1127944-xtremIO-config.patch
+  * Add support for EMC ExtremIO devices
+- Resolves: bz #1069584, #1104605, #1086825, #1086825, #1127944
+
+* Tue Aug 12 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-67
+- Modify multipath.conf (bz #1069360)
+  * remove getuid_callout example
+- Add 0081-RHBZ-1066264-check-prefix-on-rename.patch
+  * make multipath check the prefix on kpartx partitions during rename, and
+    copy the existing behaviour
+- Add 0082-UPBZ-1109995-no-sync-turs-on-pthread_cancel.patch
+  * If async tur checker fails on threads, don't retry with the sync version
+- Add 0083-RHBZ-1080055-orphan-paths-on-reload.patch
+  * Fix case where pathlist wasn't getting updated properly
+- Add 0084-RHBZ-1110000-multipath-man.patch
+  * fix errors in multipath man page
+- Add 0085-UPBZ-1110006-datacore-config.patch
+  * Add support for DataCore Virtual Disk
+- Add 0086-RHBZ-1110007-orphan-path-on-failed-add.patch
+  * If multipathd fails to add path correctly, it now fully orphans the path
+- Add 0087-RHBZ-1110013-config-error-checking.patch
+  * Improve multipath.conf error checking.
+- Add 0088-RHBZ-1069811-configurable-prio-timeout.patch
+  * checker_timeout now adjusts the timeouts of the prioritizers as well.
+- Add 0089-RHBZ-1110016-add-noasync-option.patch
+  * Add a new defaults option, "force_sync", that disables the async mode
+    of the path checkers. This is for cases where to many parallel checkers
+    hog the CPU
+- Add 0090-UPBZ-1080038-reorder-paths-for-round-robin.patch
+  * make multipathd order paths for better throughput in round-robin mode
+- Resolves: bz #1069360, #1066264, #1109995, #1080055, #1110000, #1110006
+- Resolves: bz #1110007, #1110013, #1069811, #1110016, #1080038
+
 * Wed Mar 12 2014 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-66
 - Add 0080-RHBZ-1075796-cmdline-wwid.patch
   * add multipath option "-A" to add wwids specified by the kernel
