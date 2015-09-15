@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 77%{?dist}
+Release: 77%{?dist}.1
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -113,6 +113,7 @@ Patch0102: 0102-RHBZ-631009-deferred-remove.patch
 Patch0103: 0103-RHBZ-1148979-fix-partition-mapping-creation-race-with-kpartx.patch
 Patch0104: 0104-RHBZ-1159337-fix-double-free.patch
 Patch0105: 0105-RHBZ-1180032-find-multipaths-man.patch
+Patch0106: 0106-RHBZ-1212590-dont-use-var.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -270,6 +271,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0103 -p1
 %patch0104 -p1
 %patch0105 -p1
+%patch0106 -p1
 cp %{SOURCE1} .
 
 %build
@@ -364,6 +366,11 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Thu Jul 30 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77.1
+- Add 0106-RHBZ-1212590-dont-use-var.patch
+  * use /run instead of /var/run
+- Resolves: bz #1248386
+
 * Fri Jan  9 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77
 - Add 0105-RHBZ-1180032-find-multipaths-man.patch
   * add find_multipaths to man page
