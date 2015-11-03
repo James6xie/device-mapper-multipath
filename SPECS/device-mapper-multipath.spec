@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 77%{?dist}.1
+Release: 77%{?dist}.2
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -114,6 +114,7 @@ Patch0103: 0103-RHBZ-1148979-fix-partition-mapping-creation-race-with-kpartx.pat
 Patch0104: 0104-RHBZ-1159337-fix-double-free.patch
 Patch0105: 0105-RHBZ-1180032-find-multipaths-man.patch
 Patch0106: 0106-RHBZ-1212590-dont-use-var.patch
+Patch0107: 0107-UPBZ-1254292-iscsi-targetname.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -272,6 +273,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0104 -p1
 %patch0105 -p1
 %patch0106 -p1
+%patch0107 -p1
 cp %{SOURCE1} .
 
 %build
@@ -366,6 +368,11 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Wed Sep 30 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77.2
+- Add 0107-UPBZ-1254292-iscsi-targetname.patch
+  * check for targetname iscsi sysfs value
+- Resolves: bz #1267131
+
 * Thu Jul 30 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77.1
 - Add 0106-RHBZ-1212590-dont-use-var.patch
   * use /run instead of /var/run
