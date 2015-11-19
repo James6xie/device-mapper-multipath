@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 77%{?dist}.2
+Release: 85%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -113,13 +113,37 @@ Patch0102: 0102-RHBZ-631009-deferred-remove.patch
 Patch0103: 0103-RHBZ-1148979-fix-partition-mapping-creation-race-with-kpartx.patch
 Patch0104: 0104-RHBZ-1159337-fix-double-free.patch
 Patch0105: 0105-RHBZ-1180032-find-multipaths-man.patch
-Patch0106: 0106-RHBZ-1212590-dont-use-var.patch
-Patch0107: 0107-UPBZ-1254292-iscsi-targetname.patch
+Patch0106: 0106-RHBZ-1169935-no-new-devs.patch
+Patch0107: 0107-RH-adapter-name-wildcard.patch
+Patch0108: 0108-RHBZ-1153832-kpartx-remove-devs.patch
+Patch0109: 0109-RH-read-only-bindings.patch
+Patch0110: 0110-RHBZ-blacklist-vd-devs.patch
+Patch0111: 0111-RH-dont-show-pg-timeout.patch
+Patch0112: 0112-RHBZ-1194917-add-config_dir-option.patch
+Patch0113: 0113-RHBZ-1194917-cleanup.patch
+Patch0114: 0114-RHBZ-1196394-delayed-reintegration.patch
+Patch0115: 0115-RHBZ-1198418-fix-double-free.patch
+Patch0116: 0116-UPBZ-1188179-dell-36xxi.patch
+Patch0117: 0117-RHBZ-1198424-autodetect-clariion-alua.patch
+Patch0118: 0118-UPBZ-1200738-update-eternus-config.patch
+Patch0119: 0119-RHBZ-1081397-save-alua-info.patch
+Patch0120: 0120-RHBZ-1043093-realloc-fix.patch
+Patch0121: 0121-RHBZ-1197234-rules-fix.patch
+Patch0122: 0122-RHBZ-1212590-dont-use-var.patch
+Patch0123: 0123-UPBZ-1166072-fix-path-offline.patch
+Patch0124: 0124-RHBZ-1209275-retrigger-uevents.patch
+Patch0125: 0125-RHBZ-1153832-kpartx-delete.patch
+Patch0126: 0126-RHBZ-1211383-alias-collision.patch
+Patch0127: 0127-RHBZ-1201030-use-blk-availability.patch
+Patch0128: 0128-RHBZ-1222123-mpathconf-allow.patch
+Patch0129: 0129-UPBZ-1254292-iscsi-targetname.patch
+Patch0130: 0130-RHBZ-1259523-host_name_len.patch
+Patch0131: 0131-UPBZ-1259831-lock-retry.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
 Requires: kpartx = %{version}-%{release}
-Requires: device-mapper >= 1.02.89
+Requires: device-mapper >= 7:1.02.96
 Requires: initscripts
 Requires(post): systemd-units systemd-sysv chkconfig
 Requires(preun): systemd-units
@@ -274,6 +298,30 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0105 -p1
 %patch0106 -p1
 %patch0107 -p1
+%patch0108 -p1
+%patch0109 -p1
+%patch0110 -p1
+%patch0111 -p1
+%patch0112 -p1
+%patch0113 -p1
+%patch0114 -p1
+%patch0115 -p1
+%patch0116 -p1
+%patch0117 -p1
+%patch0118 -p1
+%patch0119 -p1
+%patch0120 -p1
+%patch0121 -p1
+%patch0122 -p1
+%patch0123 -p1
+%patch0124 -p1
+%patch0125 -p1
+%patch0126 -p1
+%patch0127 -p1
+%patch0128 -p1
+%patch0129 -p1
+%patch0130 -p1
+%patch0131 -p1
 cp %{SOURCE1} .
 
 %build
@@ -368,15 +416,96 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
-* Wed Sep 30 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77.2
-- Add 0107-UPBZ-1254292-iscsi-targetname.patch
-  * check for targetname iscsi sysfs value
-- Resolves: bz #1267131
+* Thu Sep 17 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85
+- Fix device-mapper Requires line in spec file
+- Resolves: bz# 1260728
 
-* Thu Jul 30 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77.1
-- Add 0106-RHBZ-1212590-dont-use-var.patch
+* Mon Sep 14 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-84
+- 0131-UPBZ-1259831-lock-retry.patch
+  * retry locking when creating multipath devices
+- Resolves: bz# 1259831
+
+* Tue Sep  8 2015 Benjmain Marzinski <bmarzins@redhat.com> 0.4.9-83
+- Add 0130-RHBZ-1259523-host_name_len.patch
+  * increase size of host string
+- Resolves: bz# 1259523
+
+* Wed Aug 19 2015 Benjmain Marzinski <bmarzins@redhat.com> 0.4.9-82
+- Add 0129-UPBZ-1254292-iscsi-targetname.patch
+  * check for targetname iscsi sysfs value
+- Resolves: bz #1254292
+
+* Wed Jul  8 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-81
+- Modify 0128-RHBZ-1222123-mpathconf-allow.patch
+  * Fix up covscan complaints.
+- Related: bz #1222123
+
+* Tue Jul  7 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-80
+- Add 0127-RHBZ-1201030-use-blk-availability.patch
+  * Make multipath use blk-availability.service
+- Add 0128-RHBZ-1222123-mpathconf-allow.patch
+  * Add mpathconf --allow for creating specialized config files.
+- Resolves: bz #1201030, #1222123
+
+* Fri Jun  5 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-79
+- Add 0124-RHBZ-1209275-retrigger-uevents.patch
+  * Make multipathd retrigger uevents when paths haven't successfully had
+    their udev_attribute environment variable set by udev and add
+    "retrigger_ties" and "retrigger_delay" to control this
+- Add 0125-RHBZ-1153832-kpartx-delete.patch
+  * Delete all partition devices with -d (not just the ones in the partition
+    table)
+- Add 0126-RHBZ-1211383-alias-collision.patch
+  * make multipathd use the old alias, if rename failed and add
+    "new_bindings_in_boot" to determine if new bindings can be added to
+    the bindings file in the initramfs
+- Resolves: bz #1153832, #1209275, #1211383
+
+* Thu May  7 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-78
+- Modify 0102-RHBZ-631009-deferred-remove.patch
+  * Code refactor and minor fix.
+- Add 0106-RHBZ-1169935-no-new-devs.patch
+  * add new configuration option "ignore_new_boot_devs"
+- Add 0107-RH-adapter-name-wildcard.patch
+  * add new paths wildcard to show the host adapter
+- Add 0108-RHBZ-1153832-kpartx-remove-devs.patch
+  * switch to kpartx -u in 62-multipath.rules to delete removed partitions
+- Add 0109-RH-read-only-bindings.patch
+  * add -B support to multipathd
+- Add 0110-RHBZ-blacklist-vd-devs.patch
+  * virtio-blk devices don't report a WWID so multipath can't use them
+- Add 0111-RH-dont-show-pg-timeout.patch
+  * remove pg_timeout setting and displaying code
+- Add 0112-RHBZ-1194917-add-config_dir-option.patch
+  * add new configuration option "config_dir"
+- Add 0113-RHBZ-1194917-cleanup.patch
+  * code refactoring
+- Add 0114-RHBZ-1196394-delayed-reintegration.patch
+  * add new configuration options "delay_watch_checks" and
+    "delay_wait_checks"
+- Add 0115-RHBZ-1198418-fix-double-free.patch
+  * fix crash when multipath fails adding a multipath device
+- Add 0116-UPBZ-1188179-dell-36xxi.patch
+  * New builtin config
+- Add 0117-RHBZ-1198424-autodetect-clariion-alua.patch
+  * update default config
+- Add 0118-UPBZ-1200738-update-eternus-config.patch
+  * update default config
+- Add 0119-RHBZ-1081397-save-alua-info.patch
+  * make prioritizers save information between calls to speed them up.
+- Add 0120-RHBZ-1043093-realloc-fix.patch
+  * free old memory if realloc fails.
+- Add 0121-RHBZ-1197234-rules-fix.patch
+  * make sure kpartx runs after an DM_ACTIVATION event occurs.
+- Add 0122-RHBZ-1212590-dont-use-var.patch
   * use /run instead of /var/run
-- Resolves: bz #1248386
+- Add 0123-UPBZ-1166072-fix-path-offline.patch
+  * Don't mark quiesce and transport-offline paths as offline
+- Modify mulfipth.conf default config file (bz #1194794)
+- Related: bz #1153832
+- Resolves: bz #631009, #1043093, #1081397, #1166072, #1169935, #1188179
+- Resolves: bz #1194794, #1194917, #1196394, #1197234, #1198418, #1198424
+- Resolves: bz #1200738, #1212590
 
 * Fri Jan  9 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-77
 - Add 0105-RHBZ-1180032-find-multipaths-man.patch
