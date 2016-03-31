@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 85%{?dist}
+Release: 85%{?dist}.1
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -139,6 +139,7 @@ Patch0128: 0128-RHBZ-1222123-mpathconf-allow.patch
 Patch0129: 0129-UPBZ-1254292-iscsi-targetname.patch
 Patch0130: 0130-RHBZ-1259523-host_name_len.patch
 Patch0131: 0131-UPBZ-1259831-lock-retry.patch
+Patch0132: 0132-RHBZ-1296979-fix-define.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -322,6 +323,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0129 -p1
 %patch0130 -p1
 %patch0131 -p1
+%patch0132 -p1
 cp %{SOURCE1} .
 
 %build
@@ -416,6 +418,11 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Mon Feb 01 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.1
+- Add 0132-RHBZ-1296979-fix-define.patch
+  * look for the correct libudev function to set define
+- Resolves: bz #1303623
+
 * Thu Sep 17 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85
 - Fix device-mapper Requires line in spec file
 - Resolves: bz# 1260728
