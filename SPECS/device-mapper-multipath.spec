@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 85%{?dist}.1
+Release: 85%{?dist}.3
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -140,6 +140,8 @@ Patch0129: 0129-UPBZ-1254292-iscsi-targetname.patch
 Patch0130: 0130-RHBZ-1259523-host_name_len.patch
 Patch0131: 0131-UPBZ-1259831-lock-retry.patch
 Patch0132: 0132-RHBZ-1296979-fix-define.patch
+Patch0133: 0133-RHBZ-1321019-wait-for-map-add.patch
+Patch0134: 0134-UPBZ-1328515-dont-fail-discovery.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -324,6 +326,8 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0130 -p1
 %patch0131 -p1
 %patch0132 -p1
+%patch0133 -p1
+%patch0134 -p1
 cp %{SOURCE1} .
 
 %build
@@ -418,6 +422,16 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Tue Apr 19 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.3
+- Add 0134-UPBZ-1328515-dont-fail-discovery.patch
+  * don't fail discovery because individual paths failed.
+- Resolves: bz #1328515
+
+* Mon Mar 28 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.2
+- Add 0133-RHBZ-1321019-wait-for-map-add.patch
+  * wait for the device to finish being added before reloading it.
+- Resolves: bz #1321019
+
 * Mon Feb 01 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.1
 - Add 0132-RHBZ-1296979-fix-define.patch
   * look for the correct libudev function to set define
