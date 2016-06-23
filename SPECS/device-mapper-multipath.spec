@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 85%{?dist}.2
+Release: 85%{?dist}.5
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -141,6 +141,9 @@ Patch0130: 0130-RHBZ-1259523-host_name_len.patch
 Patch0131: 0131-UPBZ-1259831-lock-retry.patch
 Patch0132: 0132-RHBZ-1296979-fix-define.patch
 Patch0133: 0133-RHBZ-1321019-wait-for-map-add.patch
+Patch0134: 0134-UPBZ-1328515-dont-fail-discovery.patch
+Patch0135: 0135-RHBZ-1330480-kpartx-sync.patch
+Patch0136: 0136-RHBZ-1335746-clear-chkr-msg.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -326,6 +329,9 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0131 -p1
 %patch0132 -p1
 %patch0133 -p1
+%patch0134 -p1
+%patch0135 -p1
+%patch0136 -p1
 cp %{SOURCE1} .
 
 %build
@@ -420,6 +426,21 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Mon May 16 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.5
+- Add 0136-RHBZ-1335746-clear-chkr-msg.patch
+  * clear old checker message for offline paths.
+- Resolves: bz #1335746
+
+* Wed Apr 27 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.4
+- Add 0135-RHBZ-1330480-kpartx-sync.patch
+  * default to using udev sync mode
+- Resolves: bz #1330480
+
+* Tue Apr 19 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.3
+- Add 0134-UPBZ-1328515-dont-fail-discovery.patch
+  * don't fail discovery because individual paths failed.
+- Resolves: bz #1328515
+
 * Mon Mar 28 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.2
 - Add 0133-RHBZ-1321019-wait-for-map-add.patch
   * wait for the device to finish being added before reloading it.
