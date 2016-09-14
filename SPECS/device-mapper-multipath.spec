@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 85%{?dist}.5
+Release: 85%{?dist}.6
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -144,6 +144,7 @@ Patch0133: 0133-RHBZ-1321019-wait-for-map-add.patch
 Patch0134: 0134-UPBZ-1328515-dont-fail-discovery.patch
 Patch0135: 0135-RHBZ-1330480-kpartx-sync.patch
 Patch0136: 0136-RHBZ-1335746-clear-chkr-msg.patch
+Patch0137: 0137-RHBZ-1364905-ordering.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -332,6 +333,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0134 -p1
 %patch0135 -p1
 %patch0136 -p1
+%patch0137 -p1
 cp %{SOURCE1} .
 
 %build
@@ -426,6 +428,11 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Mon May 16 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.6
+- Add 0137-RHBZ-1364905-ordering.patch
+  * force multipathd.service to start after systemd-udev-trigger.service
+- Resolves: bz #1364905
+
 * Mon May 16 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.5
 - Add 0136-RHBZ-1335746-clear-chkr-msg.patch
   * clear old checker message for offline paths.
