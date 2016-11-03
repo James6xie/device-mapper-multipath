@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 85%{?dist}.6
+Release: 99%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -140,11 +140,62 @@ Patch0129: 0129-UPBZ-1254292-iscsi-targetname.patch
 Patch0130: 0130-RHBZ-1259523-host_name_len.patch
 Patch0131: 0131-UPBZ-1259831-lock-retry.patch
 Patch0132: 0132-RHBZ-1296979-fix-define.patch
-Patch0133: 0133-RHBZ-1321019-wait-for-map-add.patch
-Patch0134: 0134-UPBZ-1328515-dont-fail-discovery.patch
-Patch0135: 0135-RHBZ-1330480-kpartx-sync.patch
-Patch0136: 0136-RHBZ-1335746-clear-chkr-msg.patch
-Patch0137: 0137-RHBZ-1364905-ordering.patch
+Patch0133: 0133-RHBZ-1241774-sun-partition-numbering.patch
+Patch0134: 0134-RHBZ-1241528-check-mpath-prefix.patch
+Patch0135: 0135-RHBZ-1299600-path-dev-uevents.patch
+Patch0136: 0136-RHBZ-1304687-wait-for-map-add.patch
+Patch0137: 0137-RHBZ-1280524-clear-chkr-msg.patch
+Patch0138: 0138-RHBZ-1288660-fix-mpathconf-allow.patch
+Patch0139: 0139-RHBZ-1273173-queue-no-daemon-doc.patch
+Patch0140: 0140-RHBZ-1299647-fix-help.patch
+Patch0141: 0141-RHBZ-1303953-mpathpersist-typo.patch
+Patch0142: 0142-RHBZ-1283750-kpartx-fix.patch
+Patch0143: 0143-RHBZ-1299648-kpartx-sync.patch
+Patch0144: 0144-RHBZ-1299652-alua-pref-arg.patch
+Patch0145: 0145-UP-resize-help-msg.patch
+Patch0146: 0146-UPBZ-1299651-raw-output.patch
+Patch0147: 0147-RHBZ-1272620-fail-rm-msg.patch
+Patch0148: 0148-RHBZ-1292599-verify-before-remove.patch
+Patch0149: 0149-RHBZ-1292599-restore-removed-parts.patch
+Patch0150: 0150-RHBZ-1253913-fix-startup-msg.patch
+Patch0151: 0151-RHBZ-1297456-weighted-fix.patch
+Patch0152: 0152-RHBZ-1269293-fix-blk-unit-file.patch
+Patch0153: 0153-RH-fix-i686-size-bug.patch
+Patch0154: 0154-UPBZ-1291406-disable-reinstate.patch
+Patch0155: 0155-UPBZ-1300415-PURE-config.patch
+Patch0156: 0156-UPBZ-1313324-dont-fail-discovery.patch
+Patch0157: 0157-RHBZ-1319853-multipath-c-error-msg.patch
+Patch0158: 0158-RHBZ-1318581-timestamp-doc-fix.patch
+Patch0159: 0159-UPBZ-1255885-udev-waits.patch
+Patch0160: 0160-RH-udev-flags.patch
+Patch0161: 0161-RHBZ-1311659-no-kpartx.patch
+Patch0162: 0162-RHBZ-1333331-huawei-config.patch
+Patch0163: 0163-UPBZ-1333492-resize-map.patch
+Patch0164: 0164-RHBZ-1311463-dos-part-rollover.patch
+Patch0165: 0165-UPBZ-1341748-MSA-2040-conf.patch
+Patch0166: 0166-RHBZ-1323429-dont-allow-new-wwid.patch
+Patch0167: 0167-RHBZ-1335176-fix-show-cmds.patch
+Patch0168: 0168-RHBZ-1347769-shared-lock.patch
+Patch0169: 0169-UPBZ-1353357-json-output.patch
+Patch0170: 0170-UPBZ-1352925-fix-typo.patch
+Patch0171: 0171-UPBZ-1356651-allow-zero-size.patch
+Patch0172: 0172-RHBZ-1350931-no-active-add.patch
+Patch0173: 0173-RH-update-man-page.patch
+Patch0174: 0174-RHBZ-1362396-modprobe.patch
+Patch0175: 0175-RHBZ-1357382-ordering.patch
+Patch0176: 0176-RHBZ-1363830-fix-rename.patch
+Patch0177: 0177-libmultipath-correctly-initialize-pp-sg_id.patch
+Patch0178: 0178-libmultipath-add-rbd-discovery.patch
+Patch0179: 0179-multipath-tools-add-checker-callout-to-repair-path.patch
+Patch0180: 0180-multipath-tools-Add-rbd-checker.patch
+Patch0181: 0181-multipath-tools-Add-rbd-to-the-hwtable.patch
+Patch0182: 0182-multipath-tools-check-for-initialized-checker-before.patch
+Patch0183: 0183-multipathd-Don-t-call-repair-on-blacklisted-path.patch
+Patch0184: 0184-rbd-fix-sync-repair-support.patch
+Patch0185: 0185-rbd-check-for-nonshared-clients.patch
+Patch0186: 0186-rbd-check-for-exclusive-lock-enabled.patch
+Patch0187: 0187-rbd-fixup-log-messages.patch
+Patch0188: 0188-RHBZ-1368501-dont-exit.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -160,6 +211,9 @@ BuildRequires: libaio-devel, device-mapper-devel >= 1.02.89
 BuildRequires: libselinux-devel, libsepol-devel
 BuildRequires: readline-devel, ncurses-devel
 BuildRequires: systemd-units, systemd-devel
+%ifarch x86_64
+BuildRequires: librados2-devel
+%endif
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -334,6 +388,57 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0135 -p1
 %patch0136 -p1
 %patch0137 -p1
+%patch0138 -p1
+%patch0139 -p1
+%patch0140 -p1
+%patch0141 -p1
+%patch0142 -p1
+%patch0143 -p1
+%patch0144 -p1
+%patch0145 -p1
+%patch0146 -p1
+%patch0147 -p1
+%patch0148 -p1
+%patch0149 -p1
+%patch0150 -p1
+%patch0151 -p1
+%patch0152 -p1
+%patch0153 -p1
+%patch0154 -p1
+%patch0155 -p1
+%patch0156 -p1
+%patch0157 -p1
+%patch0158 -p1
+%patch0159 -p1
+%patch0160 -p1
+%patch0161 -p1
+%patch0162 -p1
+%patch0163 -p1
+%patch0164 -p1
+%patch0165 -p1
+%patch0166 -p1
+%patch0167 -p1
+%patch0168 -p1
+%patch0169 -p1
+%patch0170 -p1
+%patch0171 -p1
+%patch0172 -p1
+%patch0173 -p1
+%patch0174 -p1
+%patch0175 -p1
+%patch0176 -p1
+%patch0177 -p1
+%patch0178 -p1
+%patch0179 -p1
+%patch0180 -p1
+%patch0181 -p1
+%patch0182 -p1
+%patch0183 -p1
+%patch0184 -p1
+%patch0185 -p1
+%patch0186 -p1
+%patch0187 -p1
+%patch0188 -p1
 cp %{SOURCE1} .
 
 %build
@@ -428,35 +533,176 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
-* Mon May 16 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.6
-- Add 0137-RHBZ-1364905-ordering.patch
+* Wed Sep  7 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99
+- Add 0188-RHBZ-1368501-dont-exit.patch
+  * make multipathd not exit if it encounters recoverable errors on startup
+- Resolves: bz #1368501
+
+* Thu Sep  1 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-98
+- Modified 0180-multipath-tools-Add-rbd-checker.patch
+  * make the rbd path checker only compile if librados2-devel is installed
+- Make librados2-devel only be BuildRequired on x86_64
+- Resolves: bz #1348372
+
+* Thu Sep  1 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-97
+- Add 0177-libmultipath-correctly-initialize-pp-sg_id.patch
+  * This and all the following patches add the rbd patch checker
+- Add 0178-libmultipath-add-rbd-discovery.patch
+- Add 0179-multipath-tools-add-checker-callout-to-repair-path.patch
+- Add 0180-multipath-tools-Add-rbd-checker.patch
+- Add 0181-multipath-tools-Add-rbd-to-the-hwtable.patch
+- Add 0182-multipath-tools-check-for-initialized-checker-before.patch
+- Add 0183-multipathd-Don-t-call-repair-on-blacklisted-path.patch
+- Add 0184-rbd-fix-sync-repair-support.patch
+- Add 0185-rbd-check-for-nonshared-clients.patch
+- Add 0186-rbd-check-for-exclusive-lock-enabled.patch
+- Add 0187-rbd-fixup-log-messages.patch
+- Added BuildRequires on librados2-devel
+- Resolves: bz #1348372
+
+
+* Mon Aug  8 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-96
+- Modify 0136-RHBZ-1304687-wait-for-map-add.patch
+  * change missing_uev_msg_delay to missing_uev_msg_timeout, and make
+    multipathd re-enable table loads if the timeout has passed
+- Refresh 0137-RHBZ-1280524-clear-chkr-msg.patch
+- Refresh 0139-RHBZ-1273173-queue-no-daemon-doc.patch
+- Refresh 0150-RHBZ-1253913-fix-startup-msg.patch
+- Refresh 0154-UPBZ-1291406-disable-reinstate.patch
+- Refresh 0155-UPBZ-1300415-PURE-config.patch
+- Refresh 0156-UPBZ-1313324-dont-fail-discovery.patch
+- Refresh 0161-RHBZ-1311659-no-kpartx.patch
+- Refresh 0167-RHBZ-1335176-fix-show-cmds.patch
+- Add 0173-RH-update-man-page.patch
+- Add 0174-RHBZ-1362396-modprobe.patch
+  * make starting the multipathd service modprobe dm-multipath in the
+    sysvinit scripts
+- Add 0175-RHBZ-1357382-ordering.patch
   * force multipathd.service to start after systemd-udev-trigger.service
-- Resolves: bz #1364905
+- Add 0176-RHBZ-1363830-fix-rename.patch
+  * initialized a variable to make dm_rename not fail randomly
+- Resolves: bz #1304687, #1362396, #1357382, #1363830
 
-* Mon May 16 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.5
-- Add 0136-RHBZ-1335746-clear-chkr-msg.patch
-  * clear old checker message for offline paths.
-- Resolves: bz #1335746
+* Wed Jul 20 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-95
+- Add 0170-UPBZ-1352925-fix-typo.patch
+- Add 0171-UPBZ-1356651-allow-zero-size.patch
+  * Allow zero-sized paths to be added to a multipath device
+- Add 0172-RHBZ-1350931-no-active-add.patch
+  * Allow paths to be added to a new map if no active paths exist. Also
+    fixes 1351430
+- Resolves: bz #1350931, #1351430, #1352925, #1356651
 
-* Wed Apr 27 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.4
-- Add 0135-RHBZ-1330480-kpartx-sync.patch
-  * default to using udev sync mode
-- Resolves: bz #1330480
 
-* Tue Apr 19 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.3
-- Add 0134-UPBZ-1328515-dont-fail-discovery.patch
+* Mon Jul 18 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-94
+- Modify 0169-UPBZ-1353357-json-output.patch
+  * Add manpage documentation
+- Resolves: bz #1353357
+
+* Fri Jul 15 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-93
+- Modify 0135-RHBZ-1299600-path-dev-uevents.patch
+  * trigger uevents when adding wwids for existing devices during startup
+- Refresh 0136-RHBZ-1304687-wait-for-map-add.patch
+- Refresh 0150-RHBZ-1253913-fix-startup-msg.patch
+- Add 0168-RHBZ-1347769-shared-lock.patch
+  * make multipath lock the path devices with a shared lock
+- Add 0169-UPBZ-1353357-json-output.patch
+  * add mulitpathd json output command
+- Resolves: bz #1299600, #1347769, #1353357
+
+* Tue Jul  5 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-92
+- Add 0166-RHBZ-1323429-dont-allow-new-wwid.patch
+  * don't allow path wwid to change while it is in use
+- Add 0167-RHBZ-1335176-fix-show-cmds.patch
+  * and new show multipath format wildcard, 'f' to sho number of failures.
+    This will hopefully be useful for tracking what happens to multipath
+    devices for bz #1335176
+- Resolves: bz #1323429
+
+* Thu Jun  2 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-91
+- Add 0165-UPBZ-1341748-MSA-2040-conf.patch
+  * Add default config for MSA 2040 array
+- Resolves: bz #1341748
+
+* Wed Jun  1 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-90
+- Modify 0159-UPBZ-1255885-udev-waits.patch
+  * fix bug in failure path
+- Add 0160-RH-udev-flags.patch
+- Add 0161-RHBZ-1311659-no-kpartx.patch
+  * skip_kpartx option disables kpartx running on multipath devices
+- Add 0162-RHBZ-1333331-huawei-config.patch
+  * Add default config for Huawei XSG1 array
+- Add 0163-UPBZ-1333492-resize-map.patch
+  * restore old size if resize fails
+- Add 0164-RHBZ-1311463-dos-part-rollover.patch
+  * fix incorrect partition size due to 4k device size rollover
+- Resolves: bz #1255885, #1311463, #1311659, #1333331, #1333492
+
+* Wed Apr 20 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-89
+- Modify 0151-RHBZ-1297456-weighted-fix.patch
+  * add documentation
+- Add 0157-RHBZ-1319853-multipath-c-error-msg.patch
+  * better error reporting for multipath -c
+- Add 0158-RHBZ-1318581-timestamp-doc-fix.patch
+  * add documentation for -T
+- Add 0159-UPBZ-1255885-udev-waits.patch
+  * make multipath and kpartx wait after for udev after each command
+- Resolves: bz #1297456, #1319853, #1318581, #1255885
+
+* Tue Mar 29 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-88
+- Add 0151-RHBZ-1297456-weighted-fix.patch
+  * add wwn keyword to weighted prioritizer for persistent naming
+- Add 0152-RHBZ-1269293-fix-blk-unit-file.patch
+  * use "Wants" instead of "Requires"
+- Add 0153-RH-fix-i686-size-bug.patch
+  * use 64-bit keycodes for multipathd client commands
+- Add 0154-UPBZ-1291406-disable-reinstate.patch
+  * don't automatically reinstate ghost paths for implicit alua devices
+- Add 0155-UPBZ-1300415-PURE-config.patch
+  * Add default config for PURE FlashArray
+- Add 0156-UPBZ-1313324-dont-fail-discovery.patch
   * don't fail discovery because individual paths failed.
-- Resolves: bz #1328515
+- Resolves: bz #1297456, #1269293, #1291406, #1300415, #1313324
 
-* Mon Mar 28 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.2
-- Add 0133-RHBZ-1321019-wait-for-map-add.patch
+* Fri Feb 26 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-87
+- Add 0133-RHBZ-1241774-sun-partition-numbering.patch
+  * makr kpartx device numbers match partition numbers
+- Add 0134-RHBZ-1241528-check-mpath-prefix.patch
+  * only touch devices with a "mpath-" dm uuid prefix
+- Add 0135-RHBZ-1299600-path-dev-uevents.patch
+  * trigger path uevent the first time a path is claimed by multipath
+- Add 0136-RHBZ-1304687-wait-for-map-add.patch
   * wait for the device to finish being added before reloading it.
-- Resolves: bz #1321019
+- Add 0137-RHBZ-1280524-clear-chkr-msg.patch
+- Add 0138-RHBZ-1288660-fix-mpathconf-allow.patch
+  * don't remove existing lines from blacklist_exceptions section
+- Add 0139-RHBZ-1273173-queue-no-daemon-doc.patch
+- Add 0140-RHBZ-1299647-fix-help.patch
+- Add 0141-RHBZ-1303953-mpathpersist-typo.patch
+- Add 0142-RHBZ-1283750-kpartx-fix.patch
+  * only remove devices if their uuid says that they are the correct
+    partition device
+- Add 0143-RHBZ-1299648-kpartx-sync.patch
+  * default to using udev sync mode
+- Add 0144-RHBZ-1299652-alua-pref-arg.patch
+  * allow "exclusive_pref_bit" argument to alua prioritizer
+- Add 0145-UP-resize-help-msg.patch
+- Add 0146-UPBZ-1299651-raw-output.patch
+  * allow raw format mutipathd show commands, that remove headers and padding
+- Add 0147-RHBZ-1272620-fail-rm-msg.patch
+- Add 0148-RHBZ-1292599-verify-before-remove.patch
+  * verify that all partitions are unused before attempting to remove a device
+- Add 0149-RHBZ-1292599-restore-removed-parts.patch
+  * don't disable kpartx when restoring the first path of a device.
+- Add 0150-RHBZ-1253913-fix-startup-msg.patch
+  * wait for multipathd daemon to write pidfile before returning
+- Resolves: bz #1241528, #1241774, #1253913, #1272620, #1273173, #1280524
+- Resolves: bz #1283750, #1288660, #1292599, #1299600, #1299647, #1299648
+- Resolves: bz #1299651, #1299652, #1303953, #1304687
 
-* Mon Feb 01 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85.1
+* Wed Jan 27 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-86
 - Add 0132-RHBZ-1296979-fix-define.patch
   * look for the correct libudev function to set define
-- Resolves: bz #1303623
+- Resolves: bz # 1296979
 
 * Thu Sep 17 2015 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-85
 - Fix device-mapper Requires line in spec file

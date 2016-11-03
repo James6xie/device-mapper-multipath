@@ -2,13 +2,13 @@
  multipathd/multipathd.service |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: multipath-1364905/multipathd/multipathd.service
+Index: multipath-tools-130222/multipathd/multipathd.service
 ===================================================================
---- multipath-1364905.orig/multipathd/multipathd.service
-+++ multipath-1364905/multipathd/multipathd.service
+--- multipath-tools-130222.orig/multipathd/multipathd.service
++++ multipath-tools-130222/multipathd/multipathd.service
 @@ -2,7 +2,7 @@
  Description=Device-Mapper Multipath Device Controller
- Requires=blk-availability.service
+ Wants=blk-availability.service
  Before=iscsi.service iscsid.service lvm2-activation-early.service
 -After=syslog.target
 +After=syslog.target systemd-udev-trigger.service
