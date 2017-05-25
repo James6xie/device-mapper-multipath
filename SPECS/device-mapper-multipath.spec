@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 99%{?dist}.1
+Release: 99%{?dist}.3
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -197,6 +197,7 @@ Patch0186: 0186-rbd-check-for-exclusive-lock-enabled.patch
 Patch0187: 0187-rbd-fixup-log-messages.patch
 Patch0188: 0188-RHBZ-1368501-dont-exit.patch
 Patch0189: 0189-RHBZ-1395298-rbd-lock-on-read.patch
+Patch0190: 0190-RHBZ-1429885-max-sectors-kb.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -441,6 +442,7 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0187 -p1
 %patch0188 -p1
 %patch0189 -p1
+%patch0190 -p1
 cp %{SOURCE1} .
 
 %build
@@ -535,6 +537,16 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_mandir}/man8/kpartx.8.gz
 
 %changelog
+* Mon Apr  3 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.3
+- Modify 0190-RHBZ-1429885-max-sectors-kb.patch
+  * make max_sectors_kb only update the device sysfs paramter on creates.
+- Resolves: bz #1429885
+
+* Wed Mar  8 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.2
+- Add 0190-RHBZ-1429885-max-sectors-kb.patch
+  * add new max_sectors_kb multipath.conf parameter
+- Resolves: bz #1429885
+
 * Wed Sep  7 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.1
 - Add 0189-RHBZ-1395298-rbd-lock-on-read.patch
   * pass lock_on_read when remapping image
