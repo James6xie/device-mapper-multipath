@@ -33,10 +33,10 @@ Index: multipath-tools-130222/libmultipath/config.c
  
  	/*
  	 * Make sure features is consistent with
-@@ -680,6 +682,7 @@ load_config (char * file, struct udev *u
- 	conf->new_bindings_in_boot = 0;
- 	conf->uev_wait_timeout = DEFAULT_UEV_WAIT_TIMEOUT;
+@@ -682,6 +684,7 @@ load_config (char * file, struct udev *u
  	conf->skip_kpartx = DEFAULT_SKIP_KPARTX;
+ 	conf->remove_retries = 0;
+ 	conf->disable_changed_wwids = 0;
 +	conf->max_sectors_kb = DEFAULT_MAX_SECTORS_KB;
  
  	/*
@@ -61,10 +61,10 @@ Index: multipath-tools-130222/libmultipath/config.h
  	uid_t uid;
  	gid_t gid;
  	mode_t mode;
-@@ -146,6 +148,7 @@ struct config {
- 	int delayed_reconfig;
- 	int uev_wait_timeout;
+@@ -148,6 +150,7 @@ struct config {
  	int skip_kpartx;
+ 	int remove_retries;
+ 	int disable_changed_wwids;
 +	int max_sectors_kb;
  	unsigned int version[3];
  
@@ -97,7 +97,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
 ===================================================================
 --- multipath-tools-130222.orig/libmultipath/dict.c
 +++ multipath-tools-130222/libmultipath/dict.c
-@@ -935,6 +935,22 @@ def_new_bindings_in_boot_handler(vector
+@@ -976,6 +976,22 @@ def_disable_changed_wwids_handler(vector
  	return 0;
  }
  
@@ -120,7 +120,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  /*
   * blacklist block handlers
   */
-@@ -1724,6 +1740,26 @@ hw_delay_wait_checks_handler(vector strv
+@@ -1765,6 +1781,26 @@ hw_delay_wait_checks_handler(vector strv
  	return 0;
  }
  
@@ -147,7 +147,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  /*
   * multipaths block handlers
   */
-@@ -2275,6 +2311,26 @@ mp_delay_wait_checks_handler(vector strv
+@@ -2316,6 +2352,26 @@ mp_delay_wait_checks_handler(vector strv
  	return 0;
  }
  
@@ -174,7 +174,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  /*
   * config file keywords printing
   */
-@@ -2574,6 +2630,16 @@ snprint_mp_delay_wait_checks(char * buff
+@@ -2615,6 +2671,16 @@ snprint_mp_delay_wait_checks(char * buff
  }
  
  static int
@@ -191,7 +191,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  snprint_hw_fast_io_fail(char * buff, int len, void * data)
  {
  	struct hwentry * hwe = (struct hwentry *)data;
-@@ -2952,6 +3018,16 @@ snprint_detect_prio(char * buff, int len
+@@ -2993,6 +3059,16 @@ snprint_detect_prio(char * buff, int len
  }
  
  static int
@@ -208,7 +208,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  snprint_def_polling_interval (char * buff, int len, void * data)
  {
  	return snprintf(buff, len, "%i", conf->checkint);
-@@ -3405,6 +3481,14 @@ snprint_def_new_bindings_in_boot(char *
+@@ -3461,6 +3537,14 @@ snprint_def_disable_changed_wwids(char *
  }
  
  static int
@@ -223,15 +223,15 @@ Index: multipath-tools-130222/libmultipath/dict.c
  snprint_ble_simple (char * buff, int len, void * data)
  {
  	struct blentry * ble = (struct blentry *)data;
-@@ -3483,6 +3567,7 @@ init_keywords(void)
- 	install_keyword("retrigger_delay", &def_retrigger_delay_handler, &snprint_def_retrigger_delay);
- 	install_keyword("missing_uev_wait_timeout", &def_uev_wait_timeout_handler, &snprint_def_uev_wait_timeout);
+@@ -3541,6 +3625,7 @@ init_keywords(void)
  	install_keyword("new_bindings_in_boot", &def_new_bindings_in_boot_handler, &snprint_def_new_bindings_in_boot);
+ 	install_keyword("remove_retries", &def_remove_retries_handler, &snprint_def_remove_retries);
+ 	install_keyword("disable_changed_wwids", &def_disable_changed_wwids_handler, &snprint_def_disable_changed_wwids);
 +	install_keyword("max_sectors_kb", &def_max_sectors_kb_handler, &snprint_def_max_sectors_kb);
  	__deprecated install_keyword("default_selector", &def_selector_handler, NULL);
  	__deprecated install_keyword("default_path_grouping_policy", &def_pgpolicy_handler, NULL);
  	__deprecated install_keyword("default_uid_attribute", &def_uid_attribute_handler, NULL);
-@@ -3551,6 +3636,7 @@ init_keywords(void)
+@@ -3609,6 +3694,7 @@ init_keywords(void)
  	install_keyword("delay_watch_checks", &hw_delay_watch_checks_handler, &snprint_hw_delay_watch_checks);
  	install_keyword("delay_wait_checks", &hw_delay_wait_checks_handler, &snprint_hw_delay_wait_checks);
  	install_keyword("skip_kpartx", &hw_skip_kpartx_handler, &snprint_hw_skip_kpartx);
@@ -239,7 +239,7 @@ Index: multipath-tools-130222/libmultipath/dict.c
  	install_sublevel_end();
  
  	install_keyword_root("multipaths", &multipaths_handler);
-@@ -3579,5 +3665,6 @@ init_keywords(void)
+@@ -3637,5 +3723,6 @@ init_keywords(void)
  	install_keyword("delay_watch_checks", &mp_delay_watch_checks_handler, &snprint_mp_delay_watch_checks);
  	install_keyword("delay_wait_checks", &mp_delay_wait_checks_handler, &snprint_mp_delay_wait_checks);
  	install_keyword("skip_kpartx", &mp_skip_kpartx_handler, &snprint_mp_skip_kpartx);
@@ -402,7 +402,7 @@ Index: multipath-tools-130222/libmultipath/structs.h
  enum scsi_protocol {
  	SCSI_PROTOCOL_FCP = 0,	/* Fibre Channel */
  	SCSI_PROTOCOL_SPI = 1,	/* parallel SCSI */
-@@ -244,6 +250,7 @@ struct multipath {
+@@ -245,6 +251,7 @@ struct multipath {
  	int delay_wait_checks;
  	int force_udev_reload;
  	int skip_kpartx;
@@ -414,10 +414,10 @@ Index: multipath-tools-130222/multipath/multipath.conf.5
 ===================================================================
 --- multipath-tools-130222.orig/multipath/multipath.conf.5
 +++ multipath-tools-130222/multipath/multipath.conf.5
-@@ -556,6 +556,10 @@ user_friendly_names.  When multipathd is
- regular filesystem, the device will be renamed to a user_friendly_name. The
- default is
- .I no
+@@ -561,6 +561,10 @@ default is
+ This sets how may times multipath will retry removing a device that is in-use.
+ Between each attempt, multipath will sleep 1 second. The default is
+ .I 0
 +.TP
 +.B max_sectors_kb
 +Sets the max_sectors_kb device parameter on all path devices and the multipath
@@ -425,7 +425,7 @@ Index: multipath-tools-130222/multipath/multipath.conf.5
  .
  .SH "blacklist section"
  The
-@@ -667,6 +671,8 @@ section:
+@@ -672,6 +676,8 @@ section:
  .B delay_wait_checks
  .TP
  .B skip_kpartx
@@ -434,7 +434,7 @@ Index: multipath-tools-130222/multipath/multipath.conf.5
  .RE
  .PD
  .LP
-@@ -767,6 +773,8 @@ section:
+@@ -772,6 +778,8 @@ section:
  .B delay_wait_checks
  .TP
  .B skip_kpartx

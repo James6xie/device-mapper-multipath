@@ -15,7 +15,7 @@ Index: multipath-tools-130222/libmultipath/dmparser.c
 +			 * path uid_attribute after creating a device
 +			 */
 +			else if (strcmp(pp->wwid, mpp->wwid) != 0) {
-+				condlog(0, "%s: path wwid appears to have changed. Using old wwid.\n", pp->dev_t);
++				condlog(0, "%s: path wwid appears to have changed. Using map wwid.\n", pp->dev_t);
 +				strncpy(pp->wwid, mpp->wwid, WWID_SIZE);
 +			}
 +

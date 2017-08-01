@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 99%{?dist}.3
+Release: 111%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -196,8 +196,34 @@ Patch0185: 0185-rbd-check-for-nonshared-clients.patch
 Patch0186: 0186-rbd-check-for-exclusive-lock-enabled.patch
 Patch0187: 0187-rbd-fixup-log-messages.patch
 Patch0188: 0188-RHBZ-1368501-dont-exit.patch
-Patch0189: 0189-RHBZ-1395298-rbd-lock-on-read.patch
-Patch0190: 0190-RHBZ-1429885-max-sectors-kb.patch
+Patch0189: 0189-RHBZ-1368211-remove-retries.patch
+Patch0190: 0190-RHBZ-1380602-rbd-lock-on-read.patch
+Patch0191: 0191-RHBZ-1169168-disable-changed-paths.patch
+Patch0192: 0192-RHBZ-1362409-infinibox-config.patch
+Patch0194: 0194-RHBZ-1351964-kpartx-recurse.patch
+Patch0195: 0195-RHBZ-1359510-no-daemon-msg.patch
+Patch0196: 0196-RHBZ-1239173-dont-set-flag.patch
+Patch0197: 0197-RHBZ-1394059-max-sectors-kb.patch
+Patch0198: 0198-RHBZ-1372032-detect-path-checker.patch
+Patch0199: 0199-RHBZ-1279355-3pardata-config.patch
+Patch0200: 0200-RHBZ-1402092-orphan-status.patch
+Patch0201: 0201-RHBZ-1403552-silence-warning.patch
+Patch0202: 0202-RHBZ-1362120-skip-prio.patch
+Patch0203: 0203-RHBZ-1363718-add-msgs.patch
+Patch0204: 0204-RHBZ-1406226-nimble-config.patch
+Patch0205: 0205-RHBZ-1416569-reset-stats.patch
+Patch0206: 0206-RHBZ-1239173-pt2-no-paths.patch
+Patch0207: 0207-UP-add-libmpathcmd.patch
+Patch0208: 0208-UPBZ-1430097-multipathd-IPC-changes.patch
+Patch0209: 0209-UPBZ-1430097-multipath-C-API.patch
+Patch0210: 0210-RH-fix-uninstall.patch
+Patch0211: 0211-RH-strlen-fix.patch
+Patch0212: 0212-RHBZ-1431562-for-read-only.patch
+Patch0213: 0213-RHBZ-1430908-merge-dell-configs.patch
+Patch0214: 0214-RHBZ-1392115-set-paths-not-ready.patch
+Patch0215: 0215-RHBZ-1444194-fix-check-partitions.patch
+Patch0216: 0216-RHBZ-1448562-fix-reserve.patch
+Patch0217: 0217-RHBZ-1448576-3PAR-config.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -213,6 +239,7 @@ BuildRequires: libaio-devel, device-mapper-devel >= 1.02.89
 BuildRequires: libselinux-devel, libsepol-devel
 BuildRequires: readline-devel, ncurses-devel
 BuildRequires: systemd-units, systemd-devel
+BuildRequires: json-c-devel, perl, pkgconfig
 %ifarch x86_64
 BuildRequires: librados2-devel
 %endif
@@ -233,8 +260,19 @@ Group: System Environment/Libraries
 
 %description libs
 The %{name}-libs provides the path checker
-and prioritizer modules. It also contains the multipath shared library,
+and prioritizer modules. It also contains the libmpathpersist and
+libmpathcmd shared libraries, as well as multipath's internal library,
 libmultipath.
+
+%package devel
+Summary: Development libraries and headers for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: %{name}-libs = %{version}-%{release}
+
+%description devel
+This package contains the files need to develop applications that use
+device-mapper-multipath's lbmpathpersist and libmpathcmd libraries.
 
 %package sysvinit
 Summary: SysV init script for device-mapper-multipath
@@ -250,6 +288,27 @@ Group: System Environment/Base
 
 %description -n kpartx
 kpartx manages partition creation and removal for device-mapper devices.
+
+%package -n libdmmp
+Summary: device-mapper-multipath C API library
+Group: System Environment/Libraries
+Requires: json-c
+Requires: %{name} = %{version}-%{release}
+Requires: %{name}-libs = %{version}-%{release}
+
+%description -n libdmmp
+This package contains the shared library for the device-mapper-multipath
+C API library.
+
+%package -n libdmmp-devel
+Summary: device-mapper-multipath C API library headers
+Group: Development/Libraries
+Requires: pkgconfig
+Requires: libdmmp = %{version}-%{release}
+
+%description -n libdmmp-devel
+This package contains the files needed to develop applications that use
+device-mapper-multipath's libdmmp C API library
 
 %prep
 %setup -q -n multipath-tools-130222
@@ -443,12 +502,39 @@ kpartx manages partition creation and removal for device-mapper devices.
 %patch0188 -p1
 %patch0189 -p1
 %patch0190 -p1
+%patch0191 -p1
+%patch0192 -p1
+%patch0194 -p1
+%patch0195 -p1
+%patch0196 -p1
+%patch0197 -p1
+%patch0198 -p1
+%patch0199 -p1
+%patch0200 -p1
+%patch0201 -p1
+%patch0202 -p1
+%patch0203 -p1
+%patch0204 -p1
+%patch0205 -p1
+%patch0206 -p1
+%patch0207 -p1
+%patch0208 -p1
+%patch0209 -p1
+%patch0210 -p1
+%patch0211 -p1
+%patch0212 -p1
+%patch0213 -p1
+%patch0214 -p1
+%patch0215 -p1
+%patch0216 -p1
+%patch0217 -p1
 cp %{SOURCE1} .
 
 %build
 %define _sbindir /usr/sbin
 %define _libdir /usr/%{_lib}
 %define _libmpathdir %{_libdir}/multipath
+%define _pkgconfdir %{_libdir}/pkgconfig
 make %{?_smp_mflags} LIB=%{_lib}
 
 %install
@@ -460,7 +546,9 @@ make install \
 	syslibdir=%{_libdir} \
 	libdir=%{_libmpathdir} \
 	rcdir=%{_initrddir} \
-	unitdir=%{_unitdir}
+	unitdir=%{_unitdir} \
+	includedir=%{_includedir} \
+	pkgconfdir=%{_pkgconfdir}
 
 # tree fix up
 install -d %{buildroot}/etc/multipath
@@ -501,8 +589,6 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_sbindir}/mpathconf
 %{_sbindir}/mpathpersist
 %{_unitdir}/multipathd.service
-%{_mandir}/man3/mpath_persistent_reserve_in.3.gz
-%{_mandir}/man3/mpath_persistent_reserve_out.3.gz
 %{_mandir}/man5/multipath.conf.5.gz
 %{_mandir}/man8/multipath.8.gz
 %{_mandir}/man8/multipathd.8.gz
@@ -519,14 +605,24 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %doc AUTHOR COPYING
 %{_libdir}/libmultipath.so
 %{_libdir}/libmultipath.so.*
-%{_libdir}/libmpathpersist.so
 %{_libdir}/libmpathpersist.so.*
+%{_libdir}/libmpathcmd.so.*
 %dir %{_libmpathdir}
 %{_libmpathdir}/*
 
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
+
+%files devel
+%defattr(-,root,root,-)
+%doc AUTHOR COPYING
+%{_libdir}/libmpathpersist.so
+%{_libdir}/libmpathcmd.so
+%{_includedir}/mpath_cmd.h
+%{_includedir}/mpath_persist.h
+%{_mandir}/man3/mpath_persistent_reserve_in.3.gz
+%{_mandir}/man3/mpath_persistent_reserve_out.3.gz
 
 %files sysvinit
 %{_initrddir}/multipathd
@@ -536,21 +632,147 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_sbindir}/kpartx
 %{_mandir}/man8/kpartx.8.gz
 
+%files -n libdmmp
+%defattr(-,root,root,-)
+%doc AUTHOR COPYING
+%{_libdir}/libdmmp.so.*
+
+%post -n libdmmp -p /sbin/ldconfig
+
+%postun -n libdmmp -p /sbin/ldconfig
+
+%files -n libdmmp-devel
+%defattr(-,root,root,-)
+%doc AUTHOR COPYING
+%{_libdir}/libdmmp.so
+%dir %{_includedir}/libdmmp
+%{_includedir}/libdmmp/*
+%{_mandir}/man3/dmmp_*
+%{_mandir}/man3/libdmmp.h.3.gz
+%{_pkgconfdir}/libdmmp.pc
+
 %changelog
-* Mon Apr  3 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.3
-- Modify 0190-RHBZ-1429885-max-sectors-kb.patch
-  * make max_sectors_kb only update the device sysfs paramter on creates.
-- Resolves: bz #1429885
+* Mon May 15 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-111
+- Remove 0217-RHBZ-1437329-blacklist-oracle-devs.patch
+  * Incorrect change, and the bug is already fixed.
+- Move 0218-RHBZ-1448576-3PAR-config.patch to
+  0217-RHBZ-1448576-3PAR-config.patch
+- Resolves: bz #1448576
 
-* Wed Mar  8 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.2
-- Add 0190-RHBZ-1429885-max-sectors-kb.patch
-  * add new max_sectors_kb multipath.conf parameter
-- Resolves: bz #1429885
+* Fri May 12 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-110
+- Add 0215-RHBZ-1444194-fix-check-partitions.patch
+  * make sure kpartx partions match the correct device
+- Add 0216-RHBZ-1448562-fix-reserve.patch
+  * don't join threads that haven't been created
+- Add 0217-RHBZ-1437329-blacklist-oracle-devs.patch
+  * blacklist db2.* devices
+- Add 0218-RHBZ-1448576-3PAR-config.patch
+- Resolves: bz #1444194, #1448562, #1437329, #1448576
 
-* Wed Sep  7 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99.1
-- Add 0189-RHBZ-1395298-rbd-lock-on-read.patch
+* Tue Apr 25 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-109
+- Add 0214-RHBZ-1392115-set-paths-not-ready.patch
+  * Set ENV{SYSTEMD_READY}="0" on multipath path devices
+- Resolves: bz #1392115
+
+* Tue Apr 25 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-108
+- Add 0213-RHBZ-1430908-merge-dell-configs.patch
+- Resolves: bz #1430908
+
+* Mon Apr  3 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-107
+- Modify 0197-RHBZ-1394059-max-sectors-kb.patch
+  * Make multipath only change max_sectors_kb on creates. On reloads, it
+    just makes sure the new path matches the multipath device.
+- Refresh 0198-RHBZ-1372032-detect-path-checker.patch
+- Refresh 0201-RHBZ-1403552-silence-warning.patch
+- Refresh 0206-RHBZ-1239173-pt2-no-paths.patch
+- Refresh 0207-UP-add-libmpathcmd.patch
+- Refresh 0212-RHBZ-1431562-for-read-only.patch
+- Resolves: bz #1394059
+
+
+* Fri Mar 24 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-106
+- Add 0212-RHBZ-1431562-for-read-only.patch
+- Resolves: bz #1431562
+
+* Fri Mar 10 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-105
+- fix specfile issue
+- Related: bz #1430097
+
+* Thu Mar  9 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-104
+- Change _pkgconfdir from /usr/share/pkgconfig to /usr/lib/pkgconfig
+- Modify 0209-UPBZ-1430097-multipath-C-API.patch
+  * change _pkgconfdir and fixed double-closing fd
+- Add 0211-RH-strlen-fix.patch
+  * checks that variables are not NULL before passing them to strlen
+- Related: bz #1430097
+
+* Thu Mar  9 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-103
+- Add more explicit Requires to subpackages to make rpmdiff happy
+- Related: bz #1430097
+
+* Tue Mar  7 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-102
+- Add 0207-UP-add-libmpathcmd.patch
+  * New shared library, libmpathcmd, that sends and receives messages from
+    multipathd. device-mapper-multipath now uses this library internally.
+- Add 0208-UPBZ-1430097-multipathd-IPC-changes.patch
+  * validation that modifying commands are coming from root.
+- Add 0209-UPBZ-1430097-multipath-C-API.patch
+  * New shared library. libdmmp, that presents the information from multipathd
+    in a structured manner to make it easier for callers to use
+- Add 0210-RH-fix-uninstall.patch
+  * Minor compilation fixes
+- Make 3 new subpackages
+  * device-mapper-multipath-devel, libdmmp, and libdmmp-devel. libmpathcmd
+    and libmpathprio are in device-mapper-multipath-libs and
+    device-mapper-multipath-devel. libdmmp is in its own subpackages
+- Move libmpathprio devel files to device-mapper-multipath-devel
+- Resolves: bz #1430097
+
+* Wed Feb 15 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-101
+- Modify 0166-RHBZ-1323429-dont-allow-new-wwid.patch
+  * change print message
+- Add 0191-RHBZ-1169168-disable-changed-paths.patch
+  * add "disabled_changed_wwids" multipath.conf parameter to disable
+    paths whose wwid changes
+- Add 0192-RHBZ-1362409-infinibox-config.patch
+- Add 0194-RHBZ-1351964-kpartx-recurse.patch
+  * fix recursion on corrupt dos partitions
+- Add 0195-RHBZ-1359510-no-daemon-msg.patch
+  * print a messages when multipathd isn't running
+- Add 0196-RHBZ-1239173-dont-set-flag.patch
+  * don't set reload flag on reloads when you gain your first
+    valid path
+- Add 0197-RHBZ-1394059-max-sectors-kb.patch
+  * add "max_sectors_kb" multipath.conf parameter to set max_sectors_kb
+    on a multipath device and all its path devices
+- Add 0198-RHBZ-1372032-detect-path-checker.patch
+  * add "detect_checker" multipath.conf parameter to detect ALUA arrays
+    and set the path checker to TUR
+- Add 0199-RHBZ-1279355-3pardata-config.patch
+- Add 0200-RHBZ-1402092-orphan-status.patch
+  * clear status on orphan paths
+- Add 0201-RHBZ-1403552-silence-warning.patch
+- Add 0202-RHBZ-1362120-skip-prio.patch
+  * don't run prio on failed paths
+- Add 0203-RHBZ-1363718-add-msgs.patch
+- Add 0204-RHBZ-1406226-nimble-config.patch
+- Add 0205-RHBZ-1416569-reset-stats.patch
+  * add "reset maps stats" and "reset map <map> stats" multipathd
+    interactive commands to reset the stats tracked by multipathd
+- Add 0206-RHBZ-1239173-pt2-no-paths.patch
+  * make multipath correctly disable scanning and rules running when
+    it gets a uevent and there are not valid paths.
+- Resolves: bz #1169168, #1239173, #1279355, #1359510, #1362120, #1362409
+- Resolves: bz #1363718, #1394059, #1351964, #1372032, #1402092, #1403552
+- Resolves: bz #1406226, #1416569
+
+* Wed Sep  7 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-100
+- Add 0189-RHBZ-1368211-remove-retries.patch
+  * add "remove_retries" multipath.conf parameter to make multiple attempts
+    to remove a multipath device if it is busy.
+- Add 0190-RHBZ-1380602-rbd-lock-on-read.patch
   * pass lock_on_read when remapping image
-- Resolves: bz #1395298
+- Resolves: bz #1368211, #1380602
 
 * Wed Sep  7 2016 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-99
 - Add 0188-RHBZ-1368501-dont-exit.patch
