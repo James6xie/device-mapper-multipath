@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 111%{?dist}
+Release: 111%{?dist}.2
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -224,6 +224,10 @@ Patch0214: 0214-RHBZ-1392115-set-paths-not-ready.patch
 Patch0215: 0215-RHBZ-1444194-fix-check-partitions.patch
 Patch0216: 0216-RHBZ-1448562-fix-reserve.patch
 Patch0217: 0217-RHBZ-1448576-3PAR-config.patch
+Patch0218: 0218-RHBZ-1510837-add-feature-fix.patch
+Patch0219: 0219-RHBZ-1510834-unpriv-sgio.patch
+Patch0220: 0220-RHBZ-1510834-prkey.patch
+Patch0221: 0221-RHBZ-1510839-nimble-config.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -528,6 +532,10 @@ device-mapper-multipath's libdmmp C API library
 %patch0215 -p1
 %patch0216 -p1
 %patch0217 -p1
+%patch0218 -p1
+%patch0219 -p1
+%patch0220 -p1
+%patch0221 -p1
 cp %{SOURCE1} .
 
 %build
@@ -652,6 +660,23 @@ bin/systemctl --no-reload enable multipathd.service >/dev/null 2>&1 ||:
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Nov 20 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-111.2
+- Modify Add 0220-RHBZ-1510834-prkey.patch
+  * Improve error checking for mpathpersist
+- Resolves: bz #1510834
+
+* Wed Nov  8 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-111.1
+- Add 0218-RHBZ-1510837-add-feature-fix.patch
+  * handle null feature string
+- Add 0219-RHBZ-1510834-unpriv-sgio.patch
+  * add unpriv_sgio configuration option to set unpriv_sgio on multipath device
+    and paths
+- Add 0220-RHBZ-1510834-prkey.patch
+  * allow setting reservation_key to "file" to set and read keys from
+    prkey_file. Also add new multipathd commands to modify the prkey file.
+- Add 0221-RHBZ-1510839-nimble-config.patch
+- Resolves: bz #1510834, #1510837, #1510839
+
 * Mon May 15 2017 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-111
 - Remove 0217-RHBZ-1437329-blacklist-oracle-devs.patch
   * Incorrect change, and the bug is already fixed.
