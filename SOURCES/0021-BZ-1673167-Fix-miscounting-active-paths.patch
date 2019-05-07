@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Benjamin Marzinski <bmarzins@redhat.com>
+Date: Mon, 18 Feb 2019 13:32:45 -0600
+Subject: [PATCH] BZ 1673167: Fix miscounting active paths
+
+When multipathd gets a change uevent, it calls pathinfo with DI_NOIO.
+This sets the path state to the return value of path_offline(). If a
+path is in the PATH_DOWN state but path_offline() returns PATH_UP, when
+that path gets a change event, its state will get moved to PATH_UP
+without either reinstating the path, or reloading the map.  The next
+call to check_path() will move the path back to PATH_DOWN. Since
+check_path() simply increments and decrements nr_active instead of
+calculating it based on the actual number of active paths, nr_active
+will get decremented a second time for this failed path, potentially
+putting the multipath device into recovery mode.
+
+To avoid this situation, pathinfo() will now only set pp->state with
+DI_NOIO if DI_CHECKER is also set. This isn't set in uev_update_path()
+to avoid changing the path state in this case.
+
+Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
+---
+ libmultipath/discovery.c | 11 ++++++-----
+ multipath/main.c         |  2 +-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/libmultipath/discovery.c b/libmultipath/discovery.c
+index b267f07..5de087c 100644
+--- a/libmultipath/discovery.c
++++ b/libmultipath/discovery.c
+@@ -1914,11 +1914,12 @@ int pathinfo(struct path *pp, struct config *conf, int mask)
+ 	if (path_state == PATH_REMOVED)
+ 		goto blank;
+ 	else if (mask & DI_NOIO) {
+-		/*
+-		 * Avoid any IO on the device itself.
+-		 * Behave like DI_CHECKER in the "path unavailable" case.
+-		 */
+-		pp->chkrstate = pp->state = path_state;
++		if (mask & DI_CHECKER)
++			/*
++			 * Avoid any IO on the device itself.
++			 * simply use the path_offline() return as its state
++			 */
++			pp->chkrstate = pp->state = path_state;
+ 		return PATHINFO_OK;
+ 	}
+ 
+diff --git a/multipath/main.c b/multipath/main.c
+index 2c4054d..0545226 100644
+--- a/multipath/main.c
++++ b/multipath/main.c
+@@ -345,7 +345,7 @@ static int check_usable_paths(struct config *conf,
+ 			pp->udev = get_udev_device(pp->dev_t, DEV_DEVT);
+ 			if (pp->udev == NULL)
+ 				continue;
+-			if (pathinfo(pp, conf, DI_SYSFS|DI_NOIO) != PATHINFO_OK)
++			if (pathinfo(pp, conf, DI_SYSFS|DI_NOIO|DI_CHECKER) != PATHINFO_OK)
+ 				continue;
+ 
+ 			if (pp->state == PATH_UP &&
+-- 
+2.17.2
+
