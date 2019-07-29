@@ -1,0 +1,118 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Benjamin Marzinski <bmarzins@redhat.com>
+Date: Thu, 18 Apr 2019 12:49:46 -0500
+Subject: [PATCH] BZ 1700451: check on multipathd without starting it
+
+When "multipath -u" is run, it checks if multipathd is running.
+Currently it does this by trying to connect to the mutipathd socket.
+This can cause problems during boot.  The multipathd.socket systemd unit
+file will cause "multipath -u" to wait until multipathd has been started
+before continuing.  If there is a lot of activity on the system,
+multipathd may not start up immediately, causing block device
+initialization to be delayed, potentially until after systemd times
+waiting for the device.  To avoid this, multipath now checks if
+multipathd is running by reading /run/multipathd.pid and checking the
+/proc/<pid>/comm to verify that multipathd is really running with this
+pid. This avoids forcing "multipath -u" to wait on multipathd starting
+up.
+
+As an alternative to this patch, multipath could simply switch the order
+of the calls to systemd_service_enabled() and mpath_connect(). This would
+make multipath only try to connect with multipathd if it wasn't enabled in
+systemd, so that it wouldn't autostart.
+
+Another alternative is to do away with multipathd.socket. Since multipathd
+needs to always be running in order to get uevents, there isn't much value
+in having it autoactivate when it gets an interactive command.
+
+Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
+---
+ multipath/main.c | 60 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 54 insertions(+), 6 deletions(-)
+
+diff --git a/multipath/main.c b/multipath/main.c
+index 0545226..c2aa20d 100644
+--- a/multipath/main.c
++++ b/multipath/main.c
+@@ -850,6 +850,58 @@ out:
+ 	return r;
+ }
+ 
++int is_multipathd_running(void)
++{
++	FILE *f = NULL;
++	char buf[16];
++	char path[PATH_MAX];
++	int pid;
++	char *end;
++
++	f = fopen(DEFAULT_PIDFILE, "r");
++	if (!f) {
++		if (errno != ENOENT)
++			condlog(4, "can't open " DEFAULT_PIDFILE ": %s",
++				strerror(errno));
++		return 0;
++	}
++	if (!fgets(buf, sizeof(buf), f)) {
++		if (ferror(f))
++			condlog(4, "read of " DEFAULT_PIDFILE " failed: %s",
++				strerror(errno));
++		fclose(f);
++		return 0;
++	}
++	fclose(f);
++	errno = 0;
++	strchop(buf);
++	pid = strtol(buf, &end, 10);
++	if (errno != 0 || pid <= 0 || *end != '\0') {
++		condlog(4, "invalid contents in " DEFAULT_PIDFILE ": '%s'",
++			buf);
++		return 0;
++	}
++	snprintf(path, sizeof(path), "/proc/%d/comm", pid);
++	f = fopen(path, "r");
++	if (!f) {
++		if (errno != ENOENT)
++			condlog(4, "can't open %s: %s", path, strerror(errno));
++		return 0;
++	}
++	if (!fgets(buf, sizeof(buf), f)) {
++		if (ferror(f))
++			condlog(4, "read of %s failed: %s", path,
++				strerror(errno));
++		fclose(f);
++		return 0;
++	}
++	fclose(f);
++	strchop(buf);
++	if (strcmp(buf, "multipathd") != 0)
++		return 0;
++	return 1;
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -1031,17 +1083,13 @@ main (int argc, char *argv[])
+ 	}
+ 	if (cmd == CMD_VALID_PATH &&
+ 	    dev_type == DEV_UEVENT) {
+-		int fd;
+-
+-		fd = mpath_connect();
+-		if (fd == -1) {
++		if (!is_multipathd_running()) {
+ 			condlog(3, "%s: daemon is not running", dev);
+ 			if (!systemd_service_enabled(dev)) {
+ 				r = print_cmd_valid(1, NULL, conf);
+ 				goto out;
+ 			}
+-		} else
+-			mpath_disconnect(fd);
++		}
+ 	}
+ 
+ 	if (cmd == CMD_REMOVE_WWID && !dev) {
+-- 
+2.17.2
+

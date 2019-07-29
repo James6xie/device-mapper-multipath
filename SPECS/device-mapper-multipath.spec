@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.7.8
-Release: 7%{?dist}
+Release: 7%{?dist}.2
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -34,6 +34,8 @@ Patch0020: 0020-BZ-1668693-disable-user_friendly_names-for-NetApp.patch
 Patch0021: 0021-BZ-1673167-Fix-miscounting-active-paths.patch
 Patch0022: 0022-BZ-1673167-ignore-failed-wwid-recheck.patch
 Patch0023: 0023-BZ-1673167-fixup-wwid-recheck.patch
+Patch0024: 0024-BZ-1723746-check-on-multipathd-without-starting-it.patch
+Patch0025: 0025-BZ-1723746-test-socket-connection-in-non-blocking-mo.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -135,6 +137,9 @@ device-mapper-multipath's libdmmp C API library
 %patch0021 -p1
 %patch0022 -p1
 %patch0023 -p1
+%patch0024 -p1
+%patch0025 -p1
+cp %{SOURCE1} .
 cp %{SOURCE1} .
 
 %build
@@ -258,6 +263,16 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Jul  1 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7.2
+- Fix spec file
+- Related: bz #1723746
+
+* Tue Jun 25 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7.1
+- Add 0024-BZ-1723746-check-on-multipathd-without-starting-it.patch
+- Add 0025-BZ-1723746-test-socket-connection-in-non-blocking-mo.patch
+- Update CI testing
+- Resolves: bz #1723746
+
 * Mon Feb 25 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7
 - Add 0023-BZ-1673167-fixup-wwid-recheck.patch
 - Resolves: bz #1673167
