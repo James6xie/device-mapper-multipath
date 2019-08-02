@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Benjamin Marzinski <bmarzins@redhat.com>
+Date: Thu, 16 May 2019 13:31:35 -0500
+Subject: [PATCH] multipathd: fix REALLOC_REPLY with max length reply
+
+Commit cd5a9797e added code to REALLOC_REPLY() that intended to stop
+growing the reply buffer after it reached a maximum size. However this
+coded didn't stop the realloc() from happening. Worse, if the realloci()
+failed, multipathd would double free the reply buffer. Found by
+Coverity.
+
+Fixes: cd5a9797e "libmpathcmd(coverity): limit reply length"
+Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
+---
+ multipathd/cli.h | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/multipathd/cli.h b/multipathd/cli.h
+index f3fa077..32dcffa 100644
+--- a/multipathd/cli.h
++++ b/multipathd/cli.h
+@@ -100,15 +100,16 @@ enum {
+ 			if (m >= MAX_REPLY_LEN) {		\
+ 				condlog(1, "Warning: max reply length exceeded"); \
+ 				free(tmp);			\
+-				r = NULL;			\
++				(r) = NULL;			\
++			} else {				\
++				(r) = REALLOC((r), (m) * 2);	\
++				if ((r)) {			\
++					memset((r) + (m), 0, (m)); \
++					(m) *= 2;		\
++				}				\
++				else				\
++					free(tmp);		\
+ 			}					\
+-			(r) = REALLOC((r), (m) * 2);		\
+-			if ((r)) {				\
+-				memset((r) + (m), 0, (m));	\
+-				(m) *= 2;			\
+-			}					\
+-			else					\
+-				free(tmp);			\
+ 		}						\
+ 	} while (0)
+ 
+-- 
+2.17.2
+
