@@ -1,41 +1,52 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
-Version: 0.7.8
-Release: 7%{?dist}.2
+Version: 0.8.0
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
 
 # The source for this package was pulled from upstream's git repo.  Use the
 # following command to generate the tarball
-#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.7.8;sf=tgz" -o multipath-tools-0.7.8.tgz
-Source0: multipath-tools-0.7.8.tgz
+#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.8.0;sf=tgz" -o multipath-tools-0.8.0.tgz
+Source0: multipath-tools-0.8.0.tgz
 Source1: multipath.conf
-Patch0001: 0001-multipath-tweak-logging-style.patch
-Patch0002: 0002-multipathd-check-for-NULL-udevice-in-cli_add_path.patch
-Patch0003: 0003-libmultipath-remove-max_fds-code-duplication.patch
-Patch0004: 0004-multipathd-set-return-code-for-multipathd-commands.patch
-Patch0005: 0005-mpathpersist-fix-registration-rollback-issue.patch
-Patch0006: 0006-libmultipath-timeout-on-unresponsive-tur-thread.patch
-Patch0007: 0007-RH-fixup-udev-rules-for-redhat.patch
-Patch0008: 0008-RH-Remove-the-property-blacklist-exception-builtin.patch
-Patch0009: 0009-RH-don-t-start-without-a-config-file.patch
-Patch0010: 0010-RH-use-rpm-optflags-if-present.patch
-Patch0011: 0011-RH-add-mpathconf.patch
-Patch0012: 0012-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
-Patch0013: 0013-RH-warn-on-invalid-regex-instead-of-failing.patch
-Patch0014: 0014-RH-reset-default-find_mutipaths-value-to-off.patch
-Patch0015: 0015-libmultipath-free-allocated-value-in-set_int.patch
-Patch0016: 0016-kpartx-fix-new-memory-leak-in-dm_find_part.patch
-Patch0017: 0017-BZ-1648397-fix-mpp-hwe-handling-when-paths-are-freed.patch
-Patch0018: 0018-libmultipath-cleanup-pthread_cleanup_pop-call.patch
-Patch0019: 0019-libmultipath-fix-false-removes-in-dmevents-polling-c.patch
-Patch0020: 0020-BZ-1668693-disable-user_friendly_names-for-NetApp.patch
-Patch0021: 0021-BZ-1673167-Fix-miscounting-active-paths.patch
-Patch0022: 0022-BZ-1673167-ignore-failed-wwid-recheck.patch
-Patch0023: 0023-BZ-1673167-fixup-wwid-recheck.patch
-Patch0024: 0024-BZ-1723746-check-on-multipathd-without-starting-it.patch
-Patch0025: 0025-BZ-1723746-test-socket-connection-in-non-blocking-mo.patch
+Patch0001: 0001-BZ-1668693-disable-user_friendly_names-for-NetApp.patch
+Patch0002: 0002-libmultipath-handle-existing-paths-in-marginal_path-.patch
+Patch0003: 0003-multipathd-cleanup-marginal-paths-checking-timers.patch
+Patch0004: 0004-libmultipath-fix-marginal-paths-queueing-errors.patch
+Patch0005: 0005-libmultipath-fix-marginal_paths-nr_active-check.patch
+Patch0006: 0006-multipathd-Fix-miscounting-active-paths.patch
+Patch0007: 0007-multipathd-ignore-failed-wwid-recheck.patch
+Patch0008: 0008-libmutipath-continue-to-use-old-state-on-PATH_PENDIN.patch
+Patch0009: 0009-multipathd-use-update_path_groups-instead-of-reload_.patch
+Patch0010: 0010-multipath.conf-add-missing-options-to-man-page.patch
+Patch0011: 0011-libmultipath-add-get_uid-fallback-code-for-NVMe-devi.patch
+Patch0012: 0012-libmulitpath-cleanup-uid_fallback-code.patch
+Patch0013: 0013-multipathd-handle-changed-wwids-by-removal-and-addit.patch
+Patch0014: 0014-multipathd-remove-wwid_changed-path-attribute.patch
+Patch0015: 0015-multipathd-ignore-disable_changed_wwids.patch
+Patch0016: 0016-multipathd-Don-t-use-fallback-code-after-getting-wwi.patch
+Patch0017: 0017-libmultipath-silence-dm_is_mpath-error-messages.patch
+Patch0018: 0018-RH-fixup-udev-rules-for-redhat.patch
+Patch0019: 0019-RH-Remove-the-property-blacklist-exception-builtin.patch
+Patch0020: 0020-RH-don-t-start-without-a-config-file.patch
+Patch0021: 0021-RH-use-rpm-optflags-if-present.patch
+Patch0022: 0022-RH-add-mpathconf.patch
+Patch0023: 0023-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
+Patch0024: 0024-RH-warn-on-invalid-regex-instead-of-failing.patch
+Patch0025: 0025-RH-reset-default-find_mutipaths-value-to-off.patch
+Patch0026: 0026-RH-Fix-nvme-compilation-warning.patch
+Patch0027: 0027-Fix-systemd-version-detection.patch
+Patch0028: 0028-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
+Patch0029: 0029-BZ-1700451-check-on-multipathd-without-starting-it.patch
+Patch0030: 0030-BZ-1700451-test-socket-connection-in-non-blocking-mo.patch
+Patch0031: 0031-libmultipath-handle-clock_gettime-failures-in-tur-ch.patch
+Patch0032: 0032-kpartx-fail-if-dup-of-dasd-file-descriptor-fails.patch
+Patch0033: 0033-multipathd-fix-REALLOC_REPLY-with-max-length-reply.patch
+Patch0034: 0034-multipathd-handle-NULL-return-from-genhelp_handler.patch
+Patch0035: 0035-BZ-1700911-hwtable-add-Lenovo-DE-series.patch
+Patch0036: 0036-libmultipath-make-vector_foreach_slot_backwards-work.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -113,33 +124,7 @@ This package contains the files needed to develop applications that use
 device-mapper-multipath's libdmmp C API library
 
 %prep
-%setup -q -n multipath-tools-0.7.8
-%patch0001 -p1
-%patch0002 -p1
-%patch0003 -p1
-%patch0004 -p1
-%patch0005 -p1
-%patch0006 -p1
-%patch0007 -p1
-%patch0008 -p1
-%patch0009 -p1
-%patch0010 -p1
-%patch0011 -p1
-%patch0012 -p1
-%patch0013 -p1
-%patch0014 -p1
-%patch0015 -p1
-%patch0016 -p1
-%patch0017 -p1
-%patch0018 -p1
-%patch0019 -p1
-%patch0020 -p1
-%patch0021 -p1
-%patch0022 -p1
-%patch0023 -p1
-%patch0024 -p1
-%patch0025 -p1
-cp %{SOURCE1} .
+%autosetup -n multipath-tools-0.8.0 -p1
 cp %{SOURCE1} .
 
 %build
@@ -263,15 +248,65 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
-* Mon Jul  1 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7.2
-- Fix spec file
-- Related: bz #1723746
+* Mon Jun  3 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-5
+- Bump release number for test fix commit 0b68e623
+- Related: bz #1666322
 
-* Tue Jun 25 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7.1
-- Add 0024-BZ-1723746-check-on-multipathd-without-starting-it.patch
-- Add 0025-BZ-1723746-test-socket-connection-in-non-blocking-mo.patch
-- Update CI testing
-- Resolves: bz #1723746
+* Tue May 28 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-4
+- Add 0035-BZ-1700911-hwtable-add-Lenovo-DE-series.patch
+- Add 0036-libmultipath-make-vector_foreach_slot_backwards-work.patch
+  * Fix for bz #1713459
+- Fixes for bz #1666322 and #1669097 were included in 0.8.0 upstream
+  code
+- Resolves: bz #1666322, #1669097, #1700911, #1713459
+
+* Thu May 16 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-3
+- Add 0031-libmultipath-handle-clock_gettime-failures-in-tur-ch.patch
+- Add 0032-kpartx-fail-if-dup-of-dasd-file-descriptor-fails.patch
+- Add 0033-multipathd-fix-REALLOC_REPLY-with-max-length-reply.patch
+- Add 0034-multipathd-handle-NULL-return-from-genhelp_handler.patch
+  * The above 4 patches have been submitted upstream
+- Related: bz #1498546
+
+* Tue Apr 30 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-2
+- Add 0029-BZ-1700451-check-on-multipathd-without-starting-it.patch
+- Add 0030-BZ-1700451-test-socket-connection-in-non-blocking-mo.patch
+  * the "multipath -u" call in 62-multipath.rules should no longer hang
+    on multipathd startup.
+- Resolves: bz #1700451
+
+* Mon Apr  8 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-1
+- Update Source to upstream version 0.8.0
+  * Previous patches 0001-0006 & 0015-0019 are included in this commit
+- Rename files
+  * Previous patches 0007-0014 are now 0018-0025
+  * Previous patches 0020-0023 are now 0001, 0006 & 0007
+- Add 0002-libmultipath-handle-existing-paths-in-marginal_path-.patch
+- Add 0003-multipathd-cleanup-marginal-paths-checking-timers.patch
+- Add 0004-libmultipath-fix-marginal-paths-queueing-errors.patch
+- Add 0005-libmultipath-fix-marginal_paths-nr_active-check.patch
+- Add 0008-libmutipath-continue-to-use-old-state-on-PATH_PENDIN.patch
+- Add 0009-multipathd-use-update_path_groups-instead-of-reload_.patch
+- Add 0010-multipath.conf-add-missing-options-to-man-page.patch
+- Add 0011-libmultipath-add-get_uid-fallback-code-for-NVMe-devi.patch
+- Add 0012-libmulitpath-cleanup-uid_fallback-code.patch
+- Add 0013-multipathd-handle-changed-wwids-by-removal-and-addit.patch
+  * Multipath will now automatically remove and re-add paths if
+    their wwid changes
+- Add 0014-multipathd-remove-wwid_changed-path-attribute.patch
+- Add 0015-multipathd-ignore-disable_changed_wwids.patch
+  * Since paths are now getting removed and re-added there is
+    no need to disable them.
+- Add 0016-multipathd-Don-t-use-fallback-code-after-getting-wwi.patch
+- Add 0017-libmultipath-silence-dm_is_mpath-error-messages.patch
+- Add 0026-RH-Fix-nvme-compilation-warning.patch
+- Add 0027-Fix-systemd-version-detection.patch
+  * The above 16 patches have been submitted upstream
+- Add 0028-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
+  * Red Hat has a sysfs method to access the ANA state, which isn't
+    upstream, and will not be. This will probably go away in the
+    future.
+- Resolves: bz #1498546
 
 * Mon Feb 25 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.7.8-7
 - Add 0023-BZ-1673167-fixup-wwid-recheck.patch

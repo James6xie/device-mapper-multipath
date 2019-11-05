@@ -20,7 +20,7 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  5 files changed, 20 insertions(+)
 
 diff --git a/libmultipath/config.c b/libmultipath/config.c
-index 0aef186..6a9340a 100644
+index 141f092..544d2fb 100644
 --- a/libmultipath/config.c
 +++ b/libmultipath/config.c
 @@ -26,6 +26,7 @@
@@ -53,7 +53,7 @@ index 0aef186..6a9340a 100644
  
  	conf->processed_main_config = 1;
 diff --git a/libmultipath/config.h b/libmultipath/config.h
-index 7d0cd9a..d7fb8e2 100644
+index f5bf5b1..8803967 100644
 --- a/libmultipath/config.h
 +++ b/libmultipath/config.h
 @@ -9,6 +9,7 @@
@@ -65,7 +65,7 @@ index 7d0cd9a..d7fb8e2 100644
  /*
   * In kernel, fast_io_fail == 0 means immediate failure on rport delete.
 diff --git a/multipath/multipath.rules b/multipath/multipath.rules
-index d658073..b3f54d7 100644
+index 9df11a9..0486bf7 100644
 --- a/multipath/multipath.rules
 +++ b/multipath/multipath.rules
 @@ -9,6 +9,7 @@ IMPORT{cmdline}="nompath"
@@ -102,5 +102,5 @@ index ba24983..17434ce 100644
  Conflicts=shutdown.target
  ConditionKernelCommandLine=!nompath
 -- 
-2.7.4
+2.17.2
 

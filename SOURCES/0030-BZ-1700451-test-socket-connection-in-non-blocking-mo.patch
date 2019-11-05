@@ -43,7 +43,7 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  3 files changed, 60 insertions(+), 49 deletions(-)
 
 diff --git a/libmpathcmd/mpath_cmd.c b/libmpathcmd/mpath_cmd.c
-index 61e6a98..28b2b45 100644
+index df4ca54..b681311 100644
 --- a/libmpathcmd/mpath_cmd.c
 +++ b/libmpathcmd/mpath_cmd.c
 @@ -26,6 +26,7 @@
@@ -103,10 +103,10 @@ index 61e6a98..28b2b45 100644
  {
  	return close(fd);
 diff --git a/libmpathcmd/mpath_cmd.h b/libmpathcmd/mpath_cmd.h
-index df9d938..aa2850b 100644
+index 15aeb06..ccfd35f 100644
 --- a/libmpathcmd/mpath_cmd.h
 +++ b/libmpathcmd/mpath_cmd.h
-@@ -28,6 +28,21 @@ extern "C" {
+@@ -34,6 +34,21 @@ extern "C" {
  #define DEFAULT_REPLY_TIMEOUT	4000
  
  
@@ -129,10 +129,10 @@ index df9d938..aa2850b 100644
   * DESCRIPTION:
   *	Connect to the running multipathd daemon. On systems with the
 diff --git a/multipath/main.c b/multipath/main.c
-index c2aa20d..6f2e64b 100644
+index 632ce4d..3fb6699 100644
 --- a/multipath/main.c
 +++ b/multipath/main.c
-@@ -850,55 +850,29 @@ out:
+@@ -852,55 +852,29 @@ out:
  	return r;
  }
  
@@ -209,7 +209,7 @@ index c2aa20d..6f2e64b 100644
  	return 1;
  }
  
-@@ -1083,7 +1057,7 @@ main (int argc, char *argv[])
+@@ -1086,7 +1060,7 @@ main (int argc, char *argv[])
  	}
  	if (cmd == CMD_VALID_PATH &&
  	    dev_type == DEV_UEVENT) {
@@ -217,7 +217,7 @@ index c2aa20d..6f2e64b 100644
 +		if (!test_multipathd_socket()) {
  			condlog(3, "%s: daemon is not running", dev);
  			if (!systemd_service_enabled(dev)) {
- 				r = print_cmd_valid(1, NULL, conf);
+ 				r = print_cmd_valid(RTVL_NO, NULL, conf);
 -- 
 2.17.2
 

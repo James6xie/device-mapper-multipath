@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martin Wilck <mwilck@suse.com>
+Date: Mon, 18 Mar 2019 12:24:45 +0100
+Subject: [PATCH] BZ 1700911: hwtable: add Lenovo DE series
+
+I got this from Steven.
+
+Cc: Steve.Schremmer@netapp.com
+Cc: NetApp RDAC team <ng-eseries-upstream-maintainers@netapp.com>
+Cc: xose.vazquez@gmail.com
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
+---
+ libmultipath/hwtable.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/libmultipath/hwtable.c b/libmultipath/hwtable.c
+index 8776411..f13591d 100644
+--- a/libmultipath/hwtable.c
++++ b/libmultipath/hwtable.c
+@@ -701,6 +701,26 @@ static struct hwentry default_hw[] = {
+ 		.no_path_retry = (300 / DEFAULT_CHECKINT),
+ 		.prio_name     = PRIO_ALUA,
+ 	},
++        /*
++         * Lenovo
++         */
++        {
++                /*
++		 * DE Series
++		 *
++		 * Maintainer: ng-eseries-upstream-maintainers@netapp.com
++		 */
++                .vendor        = "LENOVO",
++                .product       = "DE_Series",
++                .bl_product    = "Universal Xport",
++                .pgpolicy      = GROUP_BY_PRIO,
++                .checker_name  = RDAC,
++                .features      = "2 pg_init_retries 50",
++                .hwhandler     = "1 rdac",
++                .prio_name     = PRIO_RDAC,
++                .pgfailback    = -FAILBACK_IMMEDIATE,
++                .no_path_retry = 30,
++        },
+ 	/*
+ 	 * NetApp
+ 	 */
+-- 
+2.17.2
+

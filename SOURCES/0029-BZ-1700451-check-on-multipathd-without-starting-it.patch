@@ -31,10 +31,10 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  1 file changed, 54 insertions(+), 6 deletions(-)
 
 diff --git a/multipath/main.c b/multipath/main.c
-index 0545226..c2aa20d 100644
+index e7771c0..632ce4d 100644
 --- a/multipath/main.c
 +++ b/multipath/main.c
-@@ -850,6 +850,58 @@ out:
+@@ -852,6 +852,58 @@ out:
  	return r;
  }
  
@@ -93,7 +93,7 @@ index 0545226..c2aa20d 100644
  int
  main (int argc, char *argv[])
  {
-@@ -1031,17 +1083,13 @@ main (int argc, char *argv[])
+@@ -1034,17 +1086,13 @@ main (int argc, char *argv[])
  	}
  	if (cmd == CMD_VALID_PATH &&
  	    dev_type == DEV_UEVENT) {
@@ -104,7 +104,7 @@ index 0545226..c2aa20d 100644
 +		if (!is_multipathd_running()) {
  			condlog(3, "%s: daemon is not running", dev);
  			if (!systemd_service_enabled(dev)) {
- 				r = print_cmd_valid(1, NULL, conf);
+ 				r = print_cmd_valid(RTVL_NO, NULL, conf);
  				goto out;
  			}
 -		} else
