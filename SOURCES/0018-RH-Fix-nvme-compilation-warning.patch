@@ -9,7 +9,7 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libmultipath/nvme/argconfig.h b/libmultipath/nvme/argconfig.h
-index adb192b..bfd10ef 100644
+index adb192b6..bfd10ef8 100644
 --- a/libmultipath/nvme/argconfig.h
 +++ b/libmultipath/nvme/argconfig.h
 @@ -76,7 +76,7 @@ struct argconfig_commandline_options {

@@ -13,10 +13,10 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  1 file changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/Makefile.inc b/Makefile.inc
-index 2f0bcea..b98800a 100644
+index 2e8946ca..1b2f47a8 100644
 --- a/Makefile.inc
 +++ b/Makefile.inc
-@@ -83,15 +83,23 @@ TEST_CC_OPTION = $(shell \
+@@ -88,15 +88,23 @@ TEST_CC_OPTION = $(shell \
  		echo "$(2)"; \
  	fi)
  

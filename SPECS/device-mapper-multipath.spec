@@ -1,52 +1,35 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
-Version: 0.8.0
-Release: 5%{?dist}
+Version: 0.8.3
+Release: 3%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
 
 # The source for this package was pulled from upstream's git repo.  Use the
 # following command to generate the tarball
-#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.8.0;sf=tgz" -o multipath-tools-0.8.0.tgz
-Source0: multipath-tools-0.8.0.tgz
+#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.8.3;sf=tgz" -o multipath-tools-0.8.3.tgz
+Source0: multipath-tools-0.8.3.tgz
 Source1: multipath.conf
-Patch0001: 0001-BZ-1668693-disable-user_friendly_names-for-NetApp.patch
-Patch0002: 0002-libmultipath-handle-existing-paths-in-marginal_path-.patch
-Patch0003: 0003-multipathd-cleanup-marginal-paths-checking-timers.patch
-Patch0004: 0004-libmultipath-fix-marginal-paths-queueing-errors.patch
-Patch0005: 0005-libmultipath-fix-marginal_paths-nr_active-check.patch
-Patch0006: 0006-multipathd-Fix-miscounting-active-paths.patch
-Patch0007: 0007-multipathd-ignore-failed-wwid-recheck.patch
-Patch0008: 0008-libmutipath-continue-to-use-old-state-on-PATH_PENDIN.patch
-Patch0009: 0009-multipathd-use-update_path_groups-instead-of-reload_.patch
-Patch0010: 0010-multipath.conf-add-missing-options-to-man-page.patch
-Patch0011: 0011-libmultipath-add-get_uid-fallback-code-for-NVMe-devi.patch
-Patch0012: 0012-libmulitpath-cleanup-uid_fallback-code.patch
-Patch0013: 0013-multipathd-handle-changed-wwids-by-removal-and-addit.patch
-Patch0014: 0014-multipathd-remove-wwid_changed-path-attribute.patch
-Patch0015: 0015-multipathd-ignore-disable_changed_wwids.patch
-Patch0016: 0016-multipathd-Don-t-use-fallback-code-after-getting-wwi.patch
-Patch0017: 0017-libmultipath-silence-dm_is_mpath-error-messages.patch
-Patch0018: 0018-RH-fixup-udev-rules-for-redhat.patch
-Patch0019: 0019-RH-Remove-the-property-blacklist-exception-builtin.patch
-Patch0020: 0020-RH-don-t-start-without-a-config-file.patch
-Patch0021: 0021-RH-use-rpm-optflags-if-present.patch
-Patch0022: 0022-RH-add-mpathconf.patch
-Patch0023: 0023-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
-Patch0024: 0024-RH-warn-on-invalid-regex-instead-of-failing.patch
-Patch0025: 0025-RH-reset-default-find_mutipaths-value-to-off.patch
-Patch0026: 0026-RH-Fix-nvme-compilation-warning.patch
-Patch0027: 0027-Fix-systemd-version-detection.patch
-Patch0028: 0028-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
-Patch0029: 0029-BZ-1700451-check-on-multipathd-without-starting-it.patch
-Patch0030: 0030-BZ-1700451-test-socket-connection-in-non-blocking-mo.patch
-Patch0031: 0031-libmultipath-handle-clock_gettime-failures-in-tur-ch.patch
-Patch0032: 0032-kpartx-fail-if-dup-of-dasd-file-descriptor-fails.patch
-Patch0033: 0033-multipathd-fix-REALLOC_REPLY-with-max-length-reply.patch
-Patch0034: 0034-multipathd-handle-NULL-return-from-genhelp_handler.patch
-Patch0035: 0035-BZ-1700911-hwtable-add-Lenovo-DE-series.patch
-Patch0036: 0036-libmultipath-make-vector_foreach_slot_backwards-work.patch
+Patch00001: 0001-multipathd-warn-when-configuration-has-been-changed.patch
+Patch00002: 0002-libmultipath-fix-leak-in-foreign-code.patch
+Patch00003: 0003-Fix-leak-in-mpathpersist.patch
+Patch00004: 0004-libmultipath-remove-unused-path-prio_args.patch
+Patch00005: 0005-libmultipath-constify-get_unaligned_be.patch
+Patch00006: 0006-libmultipath-add-missing-hwe-mpe-variable-merges.patch
+Patch00007: 0007-libmultipath-fix-sgio_get_vpd-looping.patch
+Patch00008: 0008-libmultipath-add-vend_id-to-get_vpd_sgio.patch
+Patch00009: 0009-libmultipath-add-code-to-get-vendor-specific-vpd-dat.patch
+Patch00010: 0010-RH-fixup-udev-rules-for-redhat.patch
+Patch00011: 0011-RH-Remove-the-property-blacklist-exception-builtin.patch
+Patch00012: 0012-RH-don-t-start-without-a-config-file.patch
+Patch00013: 0013-RH-use-rpm-optflags-if-present.patch
+Patch00014: 0014-RH-add-mpathconf.patch
+Patch00015: 0015-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
+Patch00016: 0016-RH-warn-on-invalid-regex-instead-of-failing.patch
+Patch00017: 0017-RH-reset-default-find_mutipaths-value-to-off.patch
+Patch00018: 0018-RH-Fix-nvme-compilation-warning.patch
+Patch00019: 0019-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -124,7 +107,7 @@ This package contains the files needed to develop applications that use
 device-mapper-multipath's libdmmp C API library
 
 %prep
-%autosetup -n multipath-tools-0.8.0 -p1
+%autosetup -n multipath-tools-0.8.3 -p1
 cp %{SOURCE1} .
 
 %build
@@ -248,6 +231,42 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Fri Nov  8 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-3
+- Rename files
+  * Previous patches 0004-0013 are now 0010-0019
+  * 0014-RH-add-mpathconf.patch now makes mpathconf default to not
+    printing foreign devices (bz #1760709)
+- Add 0004-libmultipath-remove-unused-path-prio_args.patch
+- Add 0005-libmultipath-constify-get_unaligned_be.patch
+- Add 0006-libmultipath-add-missing-hwe-mpe-variable-merges.patch
+- Add 0007-libmultipath-fix-sgio_get_vpd-looping.patch
+- Add 0008-libmultipath-add-vend_id-to-get_vpd_sgio.patch
+- Add 0009-libmultipath-add-code-to-get-vendor-specific-vpd-dat.patch
+  * Add the '%g' maps and paths format wildcard, and the vpd_vendor
+    multipath.conf devices section parameter. (bz #1527212)
+- Resolves: bz #1527212, #1760709
+
+* Mon Oct 14 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-2
+- Update CI tests
+- Related: bz #1690515
+
+* Tue Oct  8 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-1
+- Update Source to upstream version 0.8.3
+  * This version includes the fixes for bz #1690515, #1703439,
+    #1719562 & #1747534
+  * Previous patches 0001-0017 & 0031-0036 are included in this version
+- Rename files
+  * Previous patches 0018-0026 & 0028 are now 0004-0013
+  * 0008-RH-add-mpathconf.patch has been modified to add a
+    --property_blacklist option to fix bz #1753729
+- Add 0001-multipathd-warn-when-configuration-has-been-changed.patch
+  * Multipath now logs a warning message when the configuration file
+    has been changed to fix bz #1750594
+- Add 0002-libmultipath-fix-leak-in-foreign-code.patch
+- Add 0003-Fix-leak-in-mpathpersist.patch
+  * The above 3 patches have been submitted upstream
+- Resolves: bz #1690515, #1703439, #1719562, #1747534, #1750594, #1753729
+
 * Mon Jun  3 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.0-5
 - Bump release number for test fix commit 0b68e623
 - Related: bz #1666322
