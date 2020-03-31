@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 127%{?dist}
+Release: 131%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -265,6 +265,16 @@ Patch0255: 0255-RHBZ-1638651-marginal-path.patch
 Patch0256: 0256-RHBZ-1672175-retry-no-fd-paths.patch
 Patch0257: 0257-RHBZ-1679556-dont-check-dm-devices.patch
 Patch0258: 0258-RHBZ-1634183-ANA-prioritizer.patch
+Patch0259: 0259-RHBZ-1701604-fix-nr-active.patch
+Patch0260: 0260-RHBZ-1634183-prio-fixes.patch
+#Patch0261: 0261-RHBZ-1714506-skip-blacklisted-paths.patch
+Patch0262: 0262-RHBZ-1699486-reload-with-failed-paths.patch
+Patch0263: 0263-RHBZ-1686708-nvme-hcil.patch
+Patch0264: 0264-RHBZ-1699441-de-series-config.patch
+Patch0265: 0265-RHBZ-1721855-mpathpersist-speedup.patch
+Patch0266: 0266-RHBZ-1696817-fix-emc-checker.patch
+Patch0267: 0267-RHBZ-1661156-powermax-config.patch
+Patch0268: 0268-RHBZ-1721855-mpathpersist-fixes.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -610,6 +620,16 @@ device-mapper-multipath's libdmmp C API library
 %patch0256 -p1
 %patch0257 -p1
 %patch0258 -p1
+%patch0259 -p1
+%patch0260 -p1
+# %patch0261 -p1
+%patch0262 -p1
+%patch0263 -p1
+%patch0264 -p1
+%patch0265 -p1
+%patch0266 -p1
+%patch0267 -p1
+%patch0268 -p1
 cp %{SOURCE1} .
 
 %build
@@ -727,6 +747,41 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Tue Dec 10 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-131
+- Modify 0268-RHBZ-1721855-mpathpersist-fixes.patch
+  * The fix for 1721855 broke 1714506.
+- Resolves: bz #1714506
+
+* Fri Aug 30 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-130
+- Add 0268-RHBZ-1721855-mpathpersist-fixes.patch
+  * Fix issues in the mpathpersist speedup code
+- Resolves: bz #1721855
+
+* Thu Aug 29 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-129
+- Add 0265-RHBZ-1721855-mpathpersist-speedup.patch
+  * only grab path information from necessary devices, and allow batch files.
+- Add 0266-RHBZ-1696817-fix-emc-checker.patch
+  * fix detection of inactive snapshots
+- Add 0267-RHBZ-1661156-powermax-config.patch
+- Remove 0261-RHBZ-1714506-skip-blacklisted-paths.patch
+  * This fix is superseded by 0265-RHBZ-1721855-mpathpersist-speedup.patch
+- Resolves: bz #1661156, #1696817, #1721855
+
+* Mon Aug 12 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-128
+- Modify 0258-RHBZ-1634183-ANA-prioritizer.patch
+  * minor change
+- Add 0259-RHBZ-1701604-fix-nr-active.patch
+  * recalculate the number of active paths whenever a path is checked
+- Add 0260-RHBZ-1634183-prio-fixes.patch
+- Add 0261-RHBZ-1714506-skip-blacklisted-paths.patch
+  * ignore blacklisted paths in mpathpersist
+- Add 0262-RHBZ-1699486-reload-with-failed-paths.patch
+  * allow forced reloads even if there are no reusable paths
+- Add 0263-RHBZ-1686708-nvme-hcil.patch
+  * make nvme ids work like in upstream
+- Add 0264-RHBZ-1699441-de-series-config.patch
+- Resolves: bz #1686708, #1699441, #1699486, #1701604, #1714506
+
 * Thu Mar 14 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-127
 - Add 0256-RHBZ-1672175-retry-no-fd-paths.patch
   * retry adding paths if they couldn't be opened initially
