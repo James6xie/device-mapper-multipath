@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Benjamin Marzinski <bmarzins@redhat.com>
+Date: Tue, 5 Nov 2019 13:53:29 -0600
+Subject: [PATCH] libmultipath: remove unused path->prio_args
+
+Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
+---
+ libmultipath/structs.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/libmultipath/structs.h b/libmultipath/structs.h
+index a3adf906..1c32a799 100644
+--- a/libmultipath/structs.h
++++ b/libmultipath/structs.h
+@@ -272,7 +272,6 @@ struct path {
+ 	char * uid_attribute;
+ 	char * getuid;
+ 	struct prio prio;
+-	char * prio_args;
+ 	struct checker checker;
+ 	struct multipath * mpp;
+ 	int fd;
+-- 
+2.17.2
+
