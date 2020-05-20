@@ -1,6 +1,7 @@
 ---
- mpathpersist/main.c |   36 ++++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
+ libmpathpersist/mpath_persist.c |    2 +-
+ mpathpersist/main.c             |   36 ++++++++++++++++++++++--------------
+ 2 files changed, 23 insertions(+), 15 deletions(-)
 
 Index: multipath-tools-130222/mpathpersist/main.c
 ===================================================================
@@ -120,3 +121,16 @@ Index: multipath-tools-130222/mpathpersist/main.c
  out :
  	if (ret == MPATH_PR_SYNTAX_ERROR) {
  		free(batch_fn);
+Index: multipath-tools-130222/libmpathpersist/mpath_persist.c
+===================================================================
+--- multipath-tools-130222.orig/libmpathpersist/mpath_persist.c
++++ multipath-tools-130222/libmpathpersist/mpath_persist.c
+@@ -585,7 +585,7 @@ int mpath_prout_common(struct multipath
+ 			return ret ;
+ 		}
+ 	}
+-	return MPATH_PR_SUCCESS;
++	return MPATH_PR_DMMP_ERROR;
+ }
+ 
+ int send_prout_activepath(char * dev, int rq_servact, int rq_scope,

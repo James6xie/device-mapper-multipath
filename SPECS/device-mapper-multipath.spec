@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 130%{?dist}
+Release: 133%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -275,6 +275,9 @@ Patch0265: 0265-RHBZ-1721855-mpathpersist-speedup.patch
 Patch0266: 0266-RHBZ-1696817-fix-emc-checker.patch
 Patch0267: 0267-RHBZ-1661156-powermax-config.patch
 Patch0268: 0268-RHBZ-1721855-mpathpersist-fixes.patch
+Patch0269: 0269-RHBZ-1804420-remove-kpartx-limit.patch
+Patch0270: 0270-RHBZ-1775481-segfault-fix.patch
+Patch0271: 0271-RHBZ-1806197-mpathconf-typo.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -630,6 +633,9 @@ device-mapper-multipath's libdmmp C API library
 %patch0266 -p1
 %patch0267 -p1
 %patch0268 -p1
+%patch0269 -p1
+%patch0270 -p1
+%patch0271 -p1
 cp %{SOURCE1} .
 
 %build
@@ -747,6 +753,22 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Mar 30 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-133
+- Add 0270-RHBZ-1775481-segfault-fix.patch
+  * Fix segfault related to missing dm device tables
+- 0271-RHBZ-1806197-mpathconf-typo.patch
+- Resolves: bz #1775481, #1806197
+
+* Mon Mar 30 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-132
+- Add 0269-RHBZ-1804420-remove-kpartx-limit.patch
+  * Remove the 256 device limit, when searching loop devices with kpartx
+- Resolves: bz #1804420
+
+* Tue Dec 10 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-131
+- Modify 0268-RHBZ-1721855-mpathpersist-fixes.patch
+  * The fix for 1721855 broke 1714506.
+- Resolves: bz #1714506
+
 * Fri Aug 30 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-130
 - Add 0268-RHBZ-1721855-mpathpersist-fixes.patch
   * Fix issues in the mpathpersist speedup code
