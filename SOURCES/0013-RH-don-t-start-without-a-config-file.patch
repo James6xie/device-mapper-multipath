@@ -20,7 +20,7 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  5 files changed, 20 insertions(+)
 
 diff --git a/libmultipath/config.c b/libmultipath/config.c
-index 72b8d37c..4032c4c4 100644
+index b4d87689..b36778b0 100644
 --- a/libmultipath/config.c
 +++ b/libmultipath/config.c
 @@ -26,6 +26,7 @@
@@ -31,7 +31,7 @@ index 72b8d37c..4032c4c4 100644
  
  static int
  hwe_strmatch (const struct hwentry *hwe1, const struct hwentry *hwe2)
-@@ -755,6 +756,20 @@ load_config (char * file)
+@@ -778,6 +779,20 @@ load_config (char * file)
  			goto out;
  		}
  		factorize_hwtable(conf->hwtable, builtin_hwtable_size, file);
@@ -53,7 +53,7 @@ index 72b8d37c..4032c4c4 100644
  
  	conf->processed_main_config = 1;
 diff --git a/libmultipath/config.h b/libmultipath/config.h
-index 589146de..2adbd077 100644
+index ceecff2d..3368d8c9 100644
 --- a/libmultipath/config.h
 +++ b/libmultipath/config.h
 @@ -9,6 +9,7 @@

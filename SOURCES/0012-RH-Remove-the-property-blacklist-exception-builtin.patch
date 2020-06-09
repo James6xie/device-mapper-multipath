@@ -46,10 +46,10 @@ index 00e8dbdb..d9691b17 100644
  				udev_device_get_properties_list_entry(udev)) {
  
 diff --git a/multipath/multipath.conf.5 b/multipath/multipath.conf.5
-index dc103fd8..b8697d47 100644
+index 05a5e8ff..3455b1cc 100644
 --- a/multipath/multipath.conf.5
 +++ b/multipath/multipath.conf.5
-@@ -1285,9 +1285,14 @@ keywords. Both are regular expressions. For a full description of these keywords
+@@ -1286,9 +1286,14 @@ keywords. Both are regular expressions. For a full description of these keywords
  Regular expression for an udev property. All
  devices that have matching udev properties will be excluded/included.
  The handling of the \fIproperty\fR keyword is special,
@@ -65,7 +65,7 @@ index dc103fd8..b8697d47 100644
  .
  .RS
  .PP
-@@ -1298,10 +1303,6 @@ Blacklisting by missing properties is only applied to devices which do have the
+@@ -1299,10 +1304,6 @@ Blacklisting by missing properties is only applied to devices which do have the
  property specified by \fIuid_attribute\fR (e.g. \fIID_SERIAL\fR)
  set. Previously, it was applied to every device, possibly causing devices to be
  blacklisted because of temporary I/O error conditions.
@@ -77,10 +77,10 @@ index dc103fd8..b8697d47 100644
  .TP
  .B protocol
 diff --git a/tests/blacklist.c b/tests/blacklist.c
-index 362c44d9..ea284939 100644
+index 6e7c1864..cc8a9a4a 100644
 --- a/tests/blacklist.c
 +++ b/tests/blacklist.c
-@@ -291,7 +291,7 @@ static void test_property_missing(void **state)
+@@ -271,7 +271,7 @@ static void test_property_missing(void **state)
  	conf.blist_property = blist_property_wwn;
  	expect_condlog(3, "sdb: blacklisted, udev property missing\n");
  	assert_int_equal(filter_property(&conf, &udev, 3, "ID_SERIAL"),
@@ -89,7 +89,7 @@ index 362c44d9..ea284939 100644
  	assert_int_equal(filter_property(&conf, &udev, 3, "ID_BLAH"),
  			 MATCH_NOTHING);
  	assert_int_equal(filter_property(&conf, &udev, 3, ""),
-@@ -383,9 +383,7 @@ static void test_filter_path_missing1(void **state)
+@@ -363,9 +363,7 @@ static void test_filter_path_missing1(void **state)
  	conf.blist_device = blist_device_foo_bar;
  	conf.blist_protocol = blist_protocol_fcp;
  	conf.blist_wwid = blist_wwid_xyzzy;
