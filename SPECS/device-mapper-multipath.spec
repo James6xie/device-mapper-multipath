@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 1%{?dist}
+Release: 3%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -31,6 +31,22 @@ Patch00017: 0017-RH-warn-on-invalid-regex-instead-of-failing.patch
 Patch00018: 0018-RH-reset-default-find_mutipaths-value-to-off.patch
 Patch00019: 0019-RH-Fix-nvme-compilation-warning.patch
 Patch00020: 0020-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
+Patch00021: 0021-libmultipath-remove-_blacklist_exceptions-functions.patch
+Patch00022: 0022-libmultipath-fix-parser-issue-with-comments-in-strin.patch
+Patch00023: 0023-libmultipath-invert-regexes-that-start-with-exclamat.patch
+Patch00024: 0024-libmultipath-make-dm_get_map-status-return-codes-sym.patch
+Patch00025: 0025-multipathd-fix-check_path-errors-with-removed-map.patch
+Patch00026: 0026-libmultipath-make-dm_flush_maps-only-return-0-on-suc.patch
+Patch00027: 0027-multipathd-add-del-maps-multipathd-command.patch
+Patch00028: 0028-multipath-make-flushing-maps-work-like-other-command.patch
+Patch00029: 0029-multipath-delegate-flushing-maps-to-multipathd.patch
+Patch00030: 0030-multipath-add-option-to-skip-multipathd-delegation.patch
+Patch00031: 0031-libmultipath-fix-sysfs-dev_loss_tmo-parsing.patch
+Patch00032: 0032-kpartx-read-devices-with-direct-IO.patch
+Patch00033: 0033-kpartx-handle-alternate-bsd-disklabel-location.patch
+Patch00034: 0034-libmultipath-fix-checker-detection-for-nvme-devices.patch
+Patch00035: 0035-Makefile.inc-trim-extra-information-from-systemd-ver.patch
+Patch00036: 0036-kpartx-fix-Wsign-compare-error.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -232,6 +248,36 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Jul  6 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-3
+- Add 0024-libmultipath-make-dm_get_map-status-return-codes-sym.patch
+- Add 0025-multipathd-fix-check_path-errors-with-removed-map.patch
+- Add 0026-libmultipath-make-dm_flush_maps-only-return-0-on-suc.patch
+- Add 0027-multipathd-add-del-maps-multipathd-command.patch
+- Add 0028-multipath-make-flushing-maps-work-like-other-command.patch
+- Add 0029-multipath-delegate-flushing-maps-to-multipathd.patch
+- Add 0030-multipath-add-option-to-skip-multipathd-delegation.patch
+  * The above 7 patches fix bz #1845875. Multipath now attempts to
+    delegate device removal to multipathd, and multipathd handles
+    external device removal better.
+- Add 0031-libmultipath-fix-sysfs-dev_loss_tmo-parsing.patch
+  * Fixes bz #1852843
+- Add 0032-kpartx-read-devices-with-direct-IO.patch
+  * Fixes bz #1814858
+- Add 0033-kpartx-handle-alternate-bsd-disklabel-location.patch
+- Add 0034-libmultipath-fix-checker-detection-for-nvme-devices.patch
+  * fixes bz #1845915
+- Add 0035-Makefile.inc-trim-extra-information-from-systemd-ver.patch
+- Add 0036-kpartx-fix-Wsign-compare-error.patch
+- Resolves: bz #1814858, #1845875, #1845915, #1852843
+
+* Tue Jun  9 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-2
+- Add 0021-libmultipath-remove-_blacklist_exceptions-functions.patch
+- Add 0022-libmultipath-fix-parser-issue-with-comments-in-strin.patch
+- Add 0023-libmultipath-invert-regexes-that-start-with-exclamat.patch
+  * This commit also changes the default devnode blacklist to
+    blacklist all devices except scsi, dasd, and nvme.
+- Resolves: bz #1828180
+
 * Wed May 27 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-1
 - Update Source to upstream version 0.8.4
   * This version includes the fixes for bz #1768894 & #1821214
@@ -471,7 +517,7 @@ fi
 - Rename files
   * Previous patches 0007-0014 are now patches 0008-0015
 
-* Tue Apr 02 2018 Björn Esser <besser82@fedoraproject.org> - 0.7.6-1.git1cb704b
+* Mon Apr 02 2018 Benjamin Marzinski <bmarzins@redhat.com> - 0.7.6-1.git1cb704b
 - Update Source to the latest upstream commit
   * Previous patches 0001-0014 are included in this commit
   * Previous patches 0015-0022 are now patches 0007-0014
