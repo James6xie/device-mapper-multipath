@@ -1,35 +1,39 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
-Version: 0.8.3
-Release: 3%{?dist}
+Version: 0.8.4
+Release: 2%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
 
 # The source for this package was pulled from upstream's git repo.  Use the
 # following command to generate the tarball
-#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.8.3;sf=tgz" -o multipath-tools-0.8.3.tgz
-Source0: multipath-tools-0.8.3.tgz
+#curl "https://git.opensvc.com/?p=multipath-tools/.git;a=snapshot;h=refs/tags/0.8.4;sf=tgz" -o multipath-tools-0.8.4.tgz
+Source0: multipath-tools-0.8.4.tgz
 Source1: multipath.conf
-Patch00001: 0001-multipathd-warn-when-configuration-has-been-changed.patch
-Patch00002: 0002-libmultipath-fix-leak-in-foreign-code.patch
-Patch00003: 0003-Fix-leak-in-mpathpersist.patch
-Patch00004: 0004-libmultipath-remove-unused-path-prio_args.patch
-Patch00005: 0005-libmultipath-constify-get_unaligned_be.patch
-Patch00006: 0006-libmultipath-add-missing-hwe-mpe-variable-merges.patch
-Patch00007: 0007-libmultipath-fix-sgio_get_vpd-looping.patch
-Patch00008: 0008-libmultipath-add-vend_id-to-get_vpd_sgio.patch
-Patch00009: 0009-libmultipath-add-code-to-get-vendor-specific-vpd-dat.patch
-Patch00010: 0010-RH-fixup-udev-rules-for-redhat.patch
-Patch00011: 0011-RH-Remove-the-property-blacklist-exception-builtin.patch
-Patch00012: 0012-RH-don-t-start-without-a-config-file.patch
-Patch00013: 0013-RH-use-rpm-optflags-if-present.patch
-Patch00014: 0014-RH-add-mpathconf.patch
-Patch00015: 0015-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
-Patch00016: 0016-RH-warn-on-invalid-regex-instead-of-failing.patch
-Patch00017: 0017-RH-reset-default-find_mutipaths-value-to-off.patch
-Patch00018: 0018-RH-Fix-nvme-compilation-warning.patch
-Patch00019: 0019-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
+Patch00001: 0001-libmultipath-assign-variable-to-make-gcc-happy.patch
+Patch00002: 0002-libmutipath-don-t-close-fd-on-dm_lib_release.patch
+Patch00003: 0003-libmultipath-allow-force-reload-with-no-active-paths.patch
+Patch00004: 0004-libmpathpersist-depend-on-libmultipath.patch
+Patch00005: 0005-multipath-tools-Makefile-more-dependency-fixes-for-p.patch
+Patch00006: 0006-multipath-tools-Makefile.inc-set-Wno-error-clobbered.patch
+Patch00007: 0007-libmultipath-discovery.c-use-z-qualifier-for-size_t.patch
+Patch00008: 0008-libmultipath-eliminate-more-signed-unsigned-comparis.patch
+Patch00009: 0009-libmultipath-set_uint-fix-parsing-for-32bit.patch
+Patch00010: 0010-multipath-tools-Makefile-add-install-dependency.patch
+Patch00011: 0011-RH-fixup-udev-rules-for-redhat.patch
+Patch00012: 0012-RH-Remove-the-property-blacklist-exception-builtin.patch
+Patch00013: 0013-RH-don-t-start-without-a-config-file.patch
+Patch00014: 0014-RH-use-rpm-optflags-if-present.patch
+Patch00015: 0015-RH-add-mpathconf.patch
+Patch00016: 0016-RH-add-wwids-from-kernel-cmdline-mpath.wwids-with-A.patch
+Patch00017: 0017-RH-warn-on-invalid-regex-instead-of-failing.patch
+Patch00018: 0018-RH-reset-default-find_mutipaths-value-to-off.patch
+Patch00019: 0019-RH-Fix-nvme-compilation-warning.patch
+Patch00020: 0020-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
+Patch00021: 0021-libmultipath-remove-_blacklist_exceptions-functions.patch
+Patch00022: 0022-libmultipath-fix-parser-issue-with-comments-in-strin.patch
+Patch00023: 0023-libmultipath-invert-regexes-that-start-with-exclamat.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -107,7 +111,7 @@ This package contains the files needed to develop applications that use
 device-mapper-multipath's libdmmp C API library
 
 %prep
-%autosetup -n multipath-tools-0.8.3 -p1
+%autosetup -n multipath-tools-0.8.4 -p1
 cp %{SOURCE1} .
 
 %build
@@ -231,6 +235,35 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Tue Jun  9 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-2
+- Add 0021-libmultipath-remove-_blacklist_exceptions-functions.patch
+- Add 0022-libmultipath-fix-parser-issue-with-comments-in-strin.patch
+- Add 0023-libmultipath-invert-regexes-that-start-with-exclamat.patch
+  * This commit also changes the default devnode blacklist to
+    blacklist all devices except scsi, dasd, and nvme.
+- Resolves: bz #1828180
+
+* Wed May 27 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-1
+- Update Source to upstream version 0.8.4
+  * This version includes the fixes for bz #1768894 & #1821214
+  * Previous patches 0001-0009 are included in this version
+- Rename files
+  * Previous patches 0010-0019 are now 0011-0020
+- Add 0001-libmultipath-assign-variable-to-make-gcc-happy.patch
+- Add 0002-libmutipath-don-t-close-fd-on-dm_lib_release.patch
+- Add 0003-libmultipath-allow-force-reload-with-no-active-paths.patch
+  * make multipath and multipathd reload maps with no active paths
+    (bz #1814858)
+- Add 0004-libmpathpersist-depend-on-libmultipath.patch
+- Add 0005-multipath-tools-Makefile-more-dependency-fixes-for-p.patch
+- Add 0006-multipath-tools-Makefile.inc-set-Wno-error-clobbered.patch
+- Add 0007-libmultipath-discovery.c-use-z-qualifier-for-size_t.patch
+- Add 0008-libmultipath-eliminate-more-signed-unsigned-comparis.patch
+- Add 0009-libmultipath-set_uint-fix-parsing-for-32bit.patch
+- Add 0010-multipath-tools-Makefile-add-install-dependency.patch
+  * The above 10 patches have been submitted upstream
+- Resolves: bz #1768894, #1814858, #1821214
+
 * Fri Nov  8 2019 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-3
 - Rename files
   * Previous patches 0004-0013 are now 0010-0019

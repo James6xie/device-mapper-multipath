@@ -12,10 +12,10 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libmultipath/defaults.h b/libmultipath/defaults.h
-index 4dfe007c..d910da51 100644
+index e5ee6afe..52fe05b9 100644
 --- a/libmultipath/defaults.h
 +++ b/libmultipath/defaults.h
-@@ -20,7 +20,7 @@
+@@ -22,7 +22,7 @@
  #define DEFAULT_NO_PATH_RETRY	NO_PATH_RETRY_UNDEF
  #define DEFAULT_VERBOSITY	2
  #define DEFAULT_REASSIGN_MAPS	0

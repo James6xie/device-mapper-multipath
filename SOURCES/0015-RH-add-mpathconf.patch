@@ -21,10 +21,10 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  create mode 100644 multipath/mpathconf.8
 
 diff --git a/libmultipath/config.c b/libmultipath/config.c
-index 4032c4c4..2c32acf7 100644
+index b36778b0..26f8e050 100644
 --- a/libmultipath/config.c
 +++ b/libmultipath/config.c
-@@ -758,6 +758,8 @@ load_config (char * file)
+@@ -781,6 +781,8 @@ load_config (char * file)
  		factorize_hwtable(conf->hwtable, builtin_hwtable_size, file);
  	} else {
  		condlog(0, "/etc/multipath.conf does not exist, blacklisting all devices.");
@@ -630,7 +630,7 @@ index 00000000..f34003c9
 +fi
 diff --git a/multipath/mpathconf.8 b/multipath/mpathconf.8
 new file mode 100644
-index 00000000..7937ea05
+index 00000000..b82961d6
 --- /dev/null
 +++ b/multipath/mpathconf.8
 @@ -0,0 +1,135 @@
@@ -705,7 +705,7 @@ index 00000000..7937ea05
 +mpathconf will not be able to revert back to its previous state. Because
 +of this, \fB--outfile\fP is required when using \fB--allow\fP.
 +.TP
-+.B --user_friendly_name \fP { \fBy\fP | \fBn\fP }
++.B --user_friendly_names \fP { \fBy\fP | \fBn\fP }
 +If set to \fBy\fP, this adds the line
 +.B user_friendly_names yes
 +to the
