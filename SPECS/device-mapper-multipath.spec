@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 3%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -47,6 +47,8 @@ Patch00033: 0033-kpartx-handle-alternate-bsd-disklabel-location.patch
 Patch00034: 0034-libmultipath-fix-checker-detection-for-nvme-devices.patch
 Patch00035: 0035-Makefile.inc-trim-extra-information-from-systemd-ver.patch
 Patch00036: 0036-kpartx-fix-Wsign-compare-error.patch
+Patch00037: 0037-libmultipath-count-pending-paths-as-active-on-loads.patch
+Patch00038: 0038-multipath-deal-with-failures-flushing-maps.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -248,6 +250,22 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Jul 13 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-5
+- Add 0038-multipath-deal-with-failures-flushing-maps.patch
+  * Don't print "fail" if multipath needs to failback to removing
+    a device itself.
+  * Fixes bz #1845875
+- Modify multipath_conf_syntax CI test
+  * It started failing because "multpath -F" can now start multipathd
+    via the socket, and the test expected multipathd to not be running
+- Resolves: bz #1845875
+
+* Fri Jul 10 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-4
+- Add 0037-libmultipath-count-pending-paths-as-active-on-loads.patch
+  * make udev treat the device as having paths, so it will run kpartx
+  * Fixes bz #1846866
+- Resolves: bz #1846866
+
 * Mon Jul  6 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-3
 - Add 0024-libmultipath-make-dm_get_map-status-return-codes-sym.patch
 - Add 0025-multipathd-fix-check_path-errors-with-removed-map.patch
