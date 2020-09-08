@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.3
-Release: 3%{?dist}.2
+Release: 3%{?dist}.3
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -32,6 +32,7 @@ Patch00018: 0018-RH-Fix-nvme-compilation-warning.patch
 Patch00019: 0019-RH-attempt-to-get-ANA-info-via-sysfs-first.patch
 Patch00020: 0020-libmultipath-make-dm_get_map-status-return-codes-sym.patch
 Patch00021: 0021-multipathd-fix-check_path-errors-with-removed-map.patch
+Patch00022: 0022-libmultipath-fix-files-read-from-config_dir.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -233,6 +234,11 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Tue Jul 21 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-3.3
+- Add 0022-libmultipath-fix-files-read-from-config_dir.patch
+  * Fix for bz #1858993. Only read files ending in .conf
+- Resolves: bz #1858993
+
 * Fri Jul 17 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.3-3.2
 - Bump release number for rebuild
 - Resolves: bz #1856944
