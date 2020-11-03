@@ -17,10 +17,10 @@ Signed-off-by: Benjamin Marzinski <bmarzins@redhat.com>
  4 files changed, 72 insertions(+), 42 deletions(-)
 
 diff --git a/libmultipath/devmapper.c b/libmultipath/devmapper.c
-index 0f0c3a34..038ff82d 100644
+index 13a1cf53..f6204e5f 100644
 --- a/libmultipath/devmapper.c
 +++ b/libmultipath/devmapper.c
-@@ -520,36 +520,43 @@ int dm_map_present(const char * str)
+@@ -525,36 +525,43 @@ int dm_map_present(const char * str)
  
  int dm_get_map(const char *name, unsigned long long *size, char *outparams)
  {
@@ -71,7 +71,7 @@ index 0f0c3a34..038ff82d 100644
  out:
  	dm_task_destroy(dmt);
  	return r;
-@@ -623,35 +630,45 @@ is_mpath_part(const char *part_name, const char *map_name)
+@@ -628,35 +635,45 @@ is_mpath_part(const char *part_name, const char *map_name)
  
  int dm_get_status(const char *name, char *outstatus)
  {
@@ -124,7 +124,7 @@ index 0f0c3a34..038ff82d 100644
  		condlog(0, "%s: error getting map status string", name);
  
  	dm_task_destroy(dmt);
-@@ -860,7 +877,7 @@ int _dm_flush_map (const char * mapname, int need_sync, int deferred_remove,
+@@ -866,7 +883,7 @@ int _dm_flush_map (const char * mapname, int need_sync, int deferred_remove,
  			return 1;
  
  	if (need_suspend &&
@@ -133,7 +133,7 @@ index 0f0c3a34..038ff82d 100644
  	    strstr(params, "queue_if_no_path")) {
  		if (!dm_queue_if_no_path(mapname, 0))
  			queue_if_no_path = 1;
-@@ -1069,7 +1086,7 @@ struct multipath *dm_get_multipath(const char *name)
+@@ -1075,7 +1092,7 @@ struct multipath *dm_get_multipath(const char *name)
  	if (!mpp->alias)
  		goto out;
  
@@ -142,7 +142,7 @@ index 0f0c3a34..038ff82d 100644
  		goto out;
  
  	dm_get_uuid(name, mpp->wwid, WWID_SIZE);
-@@ -1253,7 +1270,7 @@ do_foreach_partmaps (const char * mapname,
+@@ -1259,7 +1276,7 @@ do_foreach_partmaps (const char * mapname,
  		    /*
  		     * and we can fetch the map table from the kernel
  		     */
@@ -169,7 +169,7 @@ index 7557a86b..adb55000 100644
  void libmp_dm_init(void);
  void libmp_udev_set_sync_support(int on);
 diff --git a/libmultipath/structs_vec.c b/libmultipath/structs_vec.c
-index c43b58fb..1342445b 100644
+index 077f2e42..8137ea21 100644
 --- a/libmultipath/structs_vec.c
 +++ b/libmultipath/structs_vec.c
 @@ -196,43 +196,47 @@ extract_hwe_from_path(struct multipath * mpp)
@@ -271,12 +271,12 @@ index c43b58fb..1342445b 100644
 +	return DMP_OK;
  }
  
- void enter_recovery_mode(struct multipath *mpp)
+ static void enter_recovery_mode(struct multipath *mpp)
 diff --git a/multipathd/main.c b/multipathd/main.c
-index 7b364cfe..13423d19 100644
+index 6b7db2c0..e3427d3d 100644
 --- a/multipathd/main.c
 +++ b/multipathd/main.c
-@@ -448,7 +448,7 @@ int __setup_multipath(struct vectors *vecs, struct multipath *mpp,
+@@ -414,7 +414,7 @@ int __setup_multipath(struct vectors *vecs, struct multipath *mpp,
  		goto out;
  	}
  
@@ -285,7 +285,7 @@ index 7b364cfe..13423d19 100644
  		condlog(0, "%s: failed to setup multipath", mpp->alias);
  		goto out;
  	}
-@@ -587,9 +587,9 @@ add_map_without_path (struct vectors *vecs, const char *alias)
+@@ -553,9 +553,9 @@ add_map_without_path (struct vectors *vecs, const char *alias)
  	mpp->mpe = find_mpe(conf->mptable, mpp->wwid);
  	put_multipath_config(conf);
  
@@ -297,7 +297,7 @@ index 7b364cfe..13423d19 100644
  		goto out;
  
  	if (!vector_alloc_slot(vecs->mpvec))
-@@ -1380,8 +1380,8 @@ map_discovery (struct vectors * vecs)
+@@ -1346,8 +1346,8 @@ map_discovery (struct vectors * vecs)
  		return 1;
  
  	vector_foreach_slot (vecs->mpvec, mpp, i)
@@ -308,7 +308,7 @@ index 7b364cfe..13423d19 100644
  			remove_map(mpp, vecs, 1);
  			i--;
  		}
-@@ -2121,7 +2121,7 @@ check_path (struct vectors * vecs, struct path * pp, int ticks)
+@@ -2087,7 +2087,7 @@ check_path (struct vectors * vecs, struct path * pp, unsigned int ticks)
  	/*
  	 * Synchronize with kernel state
  	 */
