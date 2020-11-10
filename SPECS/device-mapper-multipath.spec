@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.4.9
-Release: 133%{?dist}
+Release: 134%{?dist}
 License: GPL+
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -278,6 +278,7 @@ Patch0268: 0268-RHBZ-1721855-mpathpersist-fixes.patch
 Patch0269: 0269-RHBZ-1804420-remove-kpartx-limit.patch
 Patch0270: 0270-RHBZ-1775481-segfault-fix.patch
 Patch0271: 0271-RHBZ-1806197-mpathconf-typo.patch
+Patch0272: 0272-RHBZ-1855901-lenovo-de.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -636,6 +637,7 @@ device-mapper-multipath's libdmmp C API library
 %patch0269 -p1
 %patch0270 -p1
 %patch0271 -p1
+%patch0272 -p1
 cp %{SOURCE1} .
 
 %build
@@ -753,6 +755,10 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Mon Sep 14 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-134
+- Add 0272-RHBZ-1855901-lenovo-de.patch
+- Resolves: bz #1855901
+
 * Mon Mar 30 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.4.9-133
 - Add 0270-RHBZ-1775481-segfault-fix.patch
   * Fix segfault related to missing dm device tables
