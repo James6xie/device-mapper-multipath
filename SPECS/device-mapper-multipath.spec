@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -49,6 +49,17 @@ Patch00035: 0035-Makefile.inc-trim-extra-information-from-systemd-ver.patch
 Patch00036: 0036-kpartx-fix-Wsign-compare-error.patch
 Patch00037: 0037-libmultipath-count-pending-paths-as-active-on-loads.patch
 Patch00038: 0038-multipath-deal-with-failures-flushing-maps.patch
+Patch00039: 0039-libmultipath-factor-out-code-to-get-vpd-page-data.patch
+Patch00040: 0040-libmultipath-limit-reading-0xc9-vpd-page.patch
+Patch00041: 0041-libmultipath-add-device-to-hwtable.c.patch
+Patch00042: 0042-libmultipath-move-fast_io_fail-defines-to-structs.h.patch
+Patch00043: 0043-libmultipath-add-eh_deadline-multipath.conf-paramete.patch
+Patch00044: 0044-libmultipath-don-t-dlclose-tur-checker-DSO.patch
+Patch00045: 0045-libmultipath-warn-about-missing-braces-at-end-of-mul.patch
+Patch00046: 0046-libmultipath-ignore-multipaths-sections-without-wwid.patch
+Patch00047: 0047-tests-fix-missing-priority-blacklist-test.patch
+Patch00048: 0048-mpathpersist-Fix-Register-and-Ignore-with-0x00-SARK.patch
+Patch00049: 0049-mpathpersist-update-prkeys-file-on-changing-registra.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -250,6 +261,35 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Tue Nov 10 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-6
+- Add 0039-libmultipath-factor-out-code-to-get-vpd-page-data.patch
+- Add 0040-libmultipath-limit-reading-0xc9-vpd-page.patch
+  * Only check for rdac support on configured devices, or devices where
+    vpd page 0x00 indicates support for vpd page 0xc9
+  * Fixes bz #1877415
+- Add 0041-libmultipath-add-device-to-hwtable.c.patch
+  * Add support for Fujitsu Eternus AB/HB
+  * Fixes bz #1857429
+- Add 0042-libmultipath-move-fast_io_fail-defines-to-structs.h.patch
+- Add 0043-libmultipath-add-eh_deadline-multipath.conf-paramete.patch
+  * Fixes bz #1819897
+- Add 0044-libmultipath-don-t-dlclose-tur-checker-DSO.patch
+  * Fixes bz #1875384
+- Add 0045-libmultipath-warn-about-missing-braces-at-end-of-mul.patch
+  * Fixes bz #1897530
+- Add 0046-libmultipath-ignore-multipaths-sections-without-wwid.patch
+  * Fixes bz #1897815
+- Add 0047-tests-fix-missing-priority-blacklist-test.patch
+- Add 0048-mpathpersist-Fix-Register-and-Ignore-with-0x00-SARK.patch
+  * Make mpathpersist Register and Ignore command clear the registration
+    with a 0x0 SARK, like sg_persist does.
+  * Fixes bz #1894103
+- Add 0049-mpathpersist-update-prkeys-file-on-changing-registra.patch
+  * Fixes bz #1900522
+  * The above 11 patches have all been submitted upstream
+- Resolves: bz #1819897, #1857429, #1875384, #1877415, #1894103, #1897530
+- Resolves: bz #1897815, #1900522
+
 * Mon Jul 13 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-5
 - Add 0038-multipath-deal-with-failures-flushing-maps.patch
   * Don't print "fail" if multipath needs to failback to removing
