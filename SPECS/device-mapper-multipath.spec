@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -60,6 +60,8 @@ Patch00046: 0046-libmultipath-ignore-multipaths-sections-without-wwid.patch
 Patch00047: 0047-tests-fix-missing-priority-blacklist-test.patch
 Patch00048: 0048-mpathpersist-Fix-Register-and-Ignore-with-0x00-SARK.patch
 Patch00049: 0049-mpathpersist-update-prkeys-file-on-changing-registra.patch
+Patch00050: 0050-multipathd-Fix-multipathd-stopping-on-shutdown.patch
+Patch00051: 0051-multipath.conf.5-Improve-checker_timeout-description.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -261,6 +263,13 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Tue Dec 15 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-6
+- Add 0050-multipathd-Fix-multipathd-stopping-on-shutdown.patch
+  * Fixes bz #1892496
+- Add 0051-multipath.conf.5-Improve-checker_timeout-description.patch
+  * Fixes bz #1906073
+- Resolves: bz #1892496, #1906073
+
 * Tue Nov 10 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-6
 - Add 0039-libmultipath-factor-out-code-to-get-vpd-page-data.patch
 - Add 0040-libmultipath-limit-reading-0xc9-vpd-page.patch
