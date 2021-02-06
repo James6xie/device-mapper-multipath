@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -62,6 +62,14 @@ Patch00048: 0048-mpathpersist-Fix-Register-and-Ignore-with-0x00-SARK.patch
 Patch00049: 0049-mpathpersist-update-prkeys-file-on-changing-registra.patch
 Patch00050: 0050-multipathd-Fix-multipathd-stopping-on-shutdown.patch
 Patch00051: 0051-multipath.conf.5-Improve-checker_timeout-description.patch
+Patch00052: 0052-libmultipath-check-for-null-wwid-before-strcmp.patch
+Patch00053: 0053-libmultipath-make-find_err_path_by_dev-static.patch
+Patch00054: 0054-multipathd-avoid-io_err_stat-crash-during-shutdown.patch
+Patch00055: 0055-multipathd-avoid-io_err_stat-ABBA-deadlock.patch
+Patch00056: 0056-multipathd-use-get_monotonic_time-in-io_err_stat-cod.patch
+Patch00057: 0057-multipathd-combine-free_io_err_stat_path-and-destroy.patch
+Patch00058: 0058-multipathd-cleanup-logging-for-marginal-paths.patch
+Patch00059: 0059-libmpathpersist-fix-thread-safety-of-default-functio.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -263,6 +271,20 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Wed Jan 27 2021 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-7
+- Add 0052-libmultipath-check-for-null-wwid-before-strcmp.patch
+  * Missing part of fix for bz #1897815
+- Add 0053-libmultipath-make-find_err_path_by_dev-static.patch
+- Add 0054-multipathd-avoid-io_err_stat-crash-during-shutdown.patch
+- Add 0055-multipathd-avoid-io_err_stat-ABBA-deadlock.patch
+- Add 0056-multipathd-use-get_monotonic_time-in-io_err_stat-cod.patch
+- Add 0057-multipathd-combine-free_io_err_stat_path-and-destroy.patch
+- Add 0058-multipathd-cleanup-logging-for-marginal-paths.patch
+  * The above 6 patches fix bz #1920795
+- Add 0059-libmpathpersist-fix-thread-safety-of-default-functio.patch
+  * Fixes bz #1913549
+- Resolves: bz #1897815, #1913549, #1920795
+
 * Tue Dec 15 2020 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-6
 - Add 0050-multipathd-Fix-multipathd-stopping-on-shutdown.patch
   * Fixes bz #1892496
