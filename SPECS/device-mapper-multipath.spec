@@ -1,7 +1,7 @@
 Summary: Tools to manage multipath devices using device-mapper
 Name: device-mapper-multipath
 Version: 0.8.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: GPLv2
 Group: System Environment/Base
 URL: http://christophe.varoqui.free.fr/
@@ -70,6 +70,8 @@ Patch00056: 0056-multipathd-use-get_monotonic_time-in-io_err_stat-cod.patch
 Patch00057: 0057-multipathd-combine-free_io_err_stat_path-and-destroy.patch
 Patch00058: 0058-multipathd-cleanup-logging-for-marginal-paths.patch
 Patch00059: 0059-libmpathpersist-fix-thread-safety-of-default-functio.patch
+Patch00060: 0060-kpartx-free-loop-device-after-listing-partitions.patch
+Patch00061: 0061-RH-fix-find_multipaths-in-mpathconf.patch
 
 # runtime
 Requires: %{name}-libs = %{version}-%{release}
@@ -271,6 +273,13 @@ fi
 %{_pkgconfdir}/libdmmp.pc
 
 %changelog
+* Wed Feb 10 2021 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-9
+- Add 0060-kpartx-free-loop-device-after-listing-partitions.patch
+  * Fixes bz #1925490
+- Add 0061-RH-fix-find_multipaths-in-mpathconf.patch
+  * Fixes bz #1921651
+- Resolves: bz #1921651, #1925490
+
 * Wed Jan 27 2021 Benjamin Marzinski <bmarzins@redhat.com> 0.8.4-7
 - Add 0052-libmultipath-check-for-null-wwid-before-strcmp.patch
   * Missing part of fix for bz #1897815
